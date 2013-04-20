@@ -3,9 +3,10 @@
     using System;
     using System.Runtime.InteropServices;
     using System.Security;
+    using System.Windows;
     using System.Windows.Interop;
     using System.Windows.Media;
-    using System.Windows;
+    using System.Windows.Media.Effects;
 
     /// <summary>
     /// WPF Glass Window
@@ -111,46 +112,44 @@
             //ResetAeroGlass();
             SizeChanged += UpdateAero;
             AeroGlassCompositionChanged += UpdateAero;
-            UpdateAero(AeroGlassCompositionEnabled);
+            OnAeroEnabledChanged(AeroGlassCompositionEnabled);
         }
 
         #endregion
 
         #region Customs
 
-        public bool AeroEnabled;
         private void UpdateAero(object sender = null, SizeChangedEventArgs e = null)
         {
-            UpdateAero(AeroGlassCompositionEnabled);
+            OnAeroEnabledChanged(AeroGlassCompositionEnabled);
         }
         private void UpdateAero(object sender, AeroGlassCompositionChangedEventArgs e)
         {
-            UpdateAero(e.GlassAvailable);
+            OnAeroEnabledChanged(e.GlassAvailable);
         }
-        private void UpdateAero(bool aeroGlassCompositionEnabled)
+        protected void OnAeroEnabledChanged(bool aeroGlassCompositionEnabled)
         {
             try
             {
-                if (!aeroGlassCompositionEnabled)
-                {
-                    Background = Brushes.White;
-                    AeroEnabled = false;
-                }
-                else
+                if (aeroGlassCompositionEnabled)
                 {
                     ResetAeroGlass();
                     SetAeroGlassTransparency();
                     InvalidateVisual();
-                    AeroEnabled = true;
+                    if (Environment.OSVersion.VersionString.StartsWith("6.1")) Resources["GlowingEffect"] = new DropShadowEffect
+                        { Color = Colors.White, ShadowDepth = 0, RenderingBias = RenderingBias.Quality, BlurRadius = 8 };
+                }
+                else
+                {
+                    Background = Brushes.White;
+                    Resources["GlowingEffect"] = null;
                 }
             }
-            catch (DllNotFoundException)        // unsupport on XP & older devices
+            catch (DllNotFoundException)        // unsupported on XP & older devices
             {
-                AeroEnabled = false;
             }
             catch (InvalidOperationException)   // window is too small
             {
-                AeroEnabled = false;
             }
         }
 
