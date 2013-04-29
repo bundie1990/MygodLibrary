@@ -35,12 +35,12 @@
         /// 前景色的附加属性。
         /// </summary>
         public static readonly DependencyProperty ForegroundProperty = DependencyProperty.Register("Foreground",
-            typeof(Brush), typeof(WorldOfGooCursor), new PropertyMetadata(Brushes.Black));
+            typeof(Color), typeof(WorldOfGooCursor), new PropertyMetadata(Colors.Black));
         /// <summary>
         /// 边框色的附加属性。
         /// </summary>
-        public static readonly DependencyProperty BorderBrushProperty = DependencyProperty.Register("BorderBrush",
-            typeof(Brush), typeof(WorldOfGooCursor), new PropertyMetadata(new SolidColorBrush(Color.FromRgb(0xb8, 0xb8, 0xb8))));
+        public static readonly DependencyProperty BorderProperty = DependencyProperty.Register("Border",
+            typeof(Color), typeof(WorldOfGooCursor), new PropertyMetadata(Color.FromRgb(0xb8, 0xb8, 0xb8)));
         /// <summary>
         /// 呼气后半径的附加属性。
         /// </summary>
@@ -59,7 +59,7 @@
         /// <summary>
         /// 呼吸时长的附加属性。
         /// </summary>
-        public static readonly DependencyProperty BreathingDurationProperty = DependencyProperty.Register("BreathingDuration",
+        public static readonly DependencyProperty BreathDurationProperty = DependencyProperty.Register("BreathDuration",
             typeof(double), typeof(WorldOfGooCursor), new PropertyMetadata(20.0 / 9));
         /// <summary>
         /// 长度的附加属性。
@@ -81,22 +81,27 @@
         /// </summary>
         public static readonly DependencyProperty FullscreenModeProperty = DependencyProperty.Register("Fullscreen",
             typeof(bool), typeof(WorldOfGooCursor), new PropertyMetadata(false, FullscreenModeChanged));
+        /// <summary>
+        /// 暂停移动的附加属性。
+        /// </summary>
+        public static readonly DependencyProperty PausedProperty = DependencyProperty.Register("Paused",
+            typeof(bool), typeof(WorldOfGooCursor), new PropertyMetadata(false));
 
         /// <summary>
         /// 获取或设置前景色。
         /// </summary>
-        public Brush Foreground
+        public Color Foreground
         {
-            get { return (Brush)GetValue(ForegroundProperty); } 
+            get { return (Color)GetValue(ForegroundProperty); } 
             set { SetValue(ForegroundProperty, value); }
         }
         /// <summary>
         /// 获取或设置边框色。
         /// </summary>
-        public Brush BorderBrush
+        public Color Border
         {
-            get { return (Brush)GetValue(BorderBrushProperty); }
-            set { SetValue(BorderBrushProperty, value); }
+            get { return (Color)GetValue(BorderProperty); }
+            set { SetValue(BorderProperty, value); }
         }
         /// <summary>
         /// 获取或设置呼气后的半径。
@@ -125,10 +130,10 @@
         /// <summary>
         /// 获取或设置呼吸间隔。
         /// </summary>
-        public double BreathingDuration
+        public double BreathDuration
         {
-            get { return (double)GetValue(BreathingDurationProperty); }
-            set { SetValue(BreathingDurationProperty, value); }
+            get { return (double)GetValue(BreathDurationProperty); }
+            set { SetValue(BreathDurationProperty, value); }
         }
         /// <summary>
         /// 获取或设置长度。
@@ -162,6 +167,11 @@
             get { return (bool)GetValue(FullscreenModeProperty); }
             set { SetValue(FullscreenModeProperty, value); }
         }
+        public bool Paused
+        {
+            get { return (bool) GetValue(PausedProperty); }
+            set { SetValue(PausedProperty, value); }
+        }
 
         private readonly LinkedList<Point> points = new LinkedList<Point>();
         private readonly DispatcherTimer refreshTimer;
@@ -180,7 +190,7 @@
             {
                 Dispatcher.Invoke((Action) (() =>
                 {
-                    var current = FullscreenMode ? GetMousePoint() : Mouse.GetPosition(this);
+                    var current = GetMousePoint();
                     if (points.Count > 0)
                     {
                         var last = points.Last.Value;
@@ -202,15 +212,19 @@
             InvalidateVisual();
         }
 
-        private static Point GetMousePoint()
+        private Point GetMousePoint()
         {
+            if (Paused) return points.Count > 0 ? points.Last() : new Point(100, 100);
+            if (!FullscreenMode) return Mouse.GetPosition(this);
             var point = System.Windows.Forms.Control.MousePosition;
             return new Point(point.X, point.Y);
         }
 
         private void AddPoint(Point point)
         {
-            while (points.Count >= Length) points.RemoveFirst();
+            var length = Length;
+            if (UseBezierCurve && length > 1030) length = 1030;
+            while (points.Count >= length) points.RemoveFirst();
             points.AddLast(point);
         }
         private void AddPoint(double x, double y)
@@ -222,7 +236,7 @@
         {
             base.OnRender(drawingContext);
             if (points.Count == 0) return;
-            var size = ((InhaledRadius - ExhaledRadius) * Math.Cos(2 * Math.PI * DateTime.Now.Ticks / 10000000 / BreathingDuration)
+            var size = ((InhaledRadius - ExhaledRadius) * Math.Cos(2 * Math.PI * DateTime.Now.Ticks / 10000000 / BreathDuration)
                        + InhaledRadius + ExhaledRadius) / 2;
             var end = points.Last;
             var offset = 1;
@@ -241,33 +255,50 @@
         {
             var current = points.First;
             var i = 0;
+            drawingContext.PushOpacity((double) Border.A / 256);
+            var brush = new SolidColorBrush(Color.FromRgb(Border.R, Border.G, Border.B));
             if (BorderThickness > 0) while (current != null && current.Previous != end)
             {
                 var radius = ((double)(i++ + offset) / points.Count * 3 + 1) * size / 4;
-                drawingContext.DrawEllipse(BorderBrush, null, current.Value, radius + BorderThickness, radius + BorderThickness);
+                drawingContext.DrawEllipse(brush, null, current.Value, radius + BorderThickness, radius + BorderThickness);
+                current = current.Next;
             }
+            drawingContext.Pop();
             current = points.First;
             i = 0;
+            drawingContext.PushOpacity((double) Foreground.A / 256);
+            brush = new SolidColorBrush(Color.FromRgb(Foreground.R, Foreground.G, Foreground.B));
             while (current != null && current.Previous != end)
             {
                 var radius = ((double)(i++ + offset) / points.Count * 3 + 1) * size / 4;
-                drawingContext.DrawEllipse(Foreground, null, current.Value, radius, radius);
+                drawingContext.DrawEllipse(brush, null, current.Value, radius, radius);
+                current = current.Next;
             }
+            drawingContext.Pop();
         }
 
         private void BezierDraw(DrawingContext drawingContext, int offset, double size)
         {
             var curve = BezierCurve.Bezier2D(points.Take(points.Count - offset + 1).ToArray(), points.Count - offset + 1);
-            if (BorderThickness > 0) for (var i = 0; i < curve.Length; i++)
+            if (BorderThickness > 0)
             {
-                var radius = ((double)(i + offset) / points.Count * 3 + 1) * size / 4;
-                drawingContext.DrawEllipse(BorderBrush, null, curve[i], radius + BorderThickness, radius + BorderThickness);
+                drawingContext.PushOpacity((double)Border.A / 256);
+                var borderBrush = new SolidColorBrush(Color.FromRgb(Border.R, Border.G, Border.B));
+                for (var i = 0; i < curve.Length; i++)
+                {
+                    var radius = ((double)(i + offset) / points.Count * 3 + 1) * size / 4;
+                    drawingContext.DrawEllipse(borderBrush, null, curve[i], radius + BorderThickness, radius + BorderThickness);
+                }
+                drawingContext.Pop();
             }
+            drawingContext.PushOpacity((double)Foreground.A / 256);
+            var brush = new SolidColorBrush(Color.FromRgb(Foreground.R, Foreground.G, Foreground.B));
             for (var i = 0; i < curve.Length; i++)
             {
                 var radius = ((double)(i + offset) / points.Count * 3 + 1) * size / 4;
-                drawingContext.DrawEllipse(Foreground, null, curve[i], radius, radius);
+                drawingContext.DrawEllipse(brush, null, curve[i], radius, radius);
             }
+            drawingContext.Pop();
         }
     }
 

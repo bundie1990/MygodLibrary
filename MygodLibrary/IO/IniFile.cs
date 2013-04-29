@@ -111,32 +111,6 @@
     }
 
     /// <summary>
-    /// 包含数据被修改的事件数据。
-    /// </summary>
-    /// <typeparam name="T">被修改的数据的类型，需要是一个类。</typeparam>
-    public sealed class IniDataChangedEventArgs<T> : EventArgs
-    {
-        /// <summary>
-        /// 创建一个 ClassDataChangedEventArgs 实例。
-        /// </summary>
-        /// <param name="oldValue">修改前的值。</param>
-        /// <param name="newValue">修改后的值。</param>
-        public IniDataChangedEventArgs(T oldValue, T newValue)
-        {
-            OldValue = oldValue;
-            NewValue = newValue;
-        }
-        /// <summary>
-        /// 获取修改前的值。
-        /// </summary>
-        public T OldValue { get; private set; }
-        /// <summary>
-        /// 获取修改后的值。
-        /// </summary>
-        public T NewValue { get; private set; }
-    }
-
-    /// <summary>
     /// 定义特定的方法获得或设置值。
     /// </summary>
     /// <typeparam name="T">要获得的类型。</typeparam>
@@ -153,7 +127,9 @@
         /// <param name="value">要设置的值。</param>
         void Set(T value);
 
-        event EventHandler<IniDataChangedEventArgs<T>> DataChanged;
+        void ResetToDefault();
+
+        event EventHandler DataChanged;
     }
     /// <summary>
     /// 定义带参数的特定方法获得或设置值。
@@ -204,7 +180,7 @@
         /// <summary>
         /// Key resetter.
         /// </summary>
-        public string DataKey { set { dataKey = value; requested = false; } }
+        public string DataKey { get { return dataKey; } set { dataKey = value; requested = false; } }
 
         private string requestedValue;
         private bool requested;
@@ -221,13 +197,18 @@
         public void Set(string value)
         {
             if (requestedValue == value) return;
-            if (DataChanged != null) DataChanged(this, new IniDataChangedEventArgs<string>(requestedValue, value));
             requested = true;
             requestedValue = value;
             section.IniFile.WriteIniData(section.Name, dataKey, value);
+            if (DataChanged != null) DataChanged(this, EventArgs.Empty);
         }
 
-        public event EventHandler<IniDataChangedEventArgs<string>> DataChanged;
+        public void ResetToDefault()
+        {
+            Set(defaultValue);
+        }
+
+        public event EventHandler DataChanged;
     }
     public class Int32Data : StringData, IIniData<int>
     {
@@ -245,12 +226,9 @@
         public void Set(int value)
         {
             if (requestedValue == value) return;
-            if (DataChanged != null) DataChanged(this, new IniDataChangedEventArgs<int>(requestedValue, value));
-            Set(value.ToString());
             requestedValue = value;
+            Set(value.ToString());
         }
-
-        public new event EventHandler<IniDataChangedEventArgs<int>> DataChanged;
     }
     public class DoubleData : StringData, IIniData<double>
     {
@@ -270,12 +248,9 @@
             // ReSharper disable CompareOfFloatsByEqualityOperator
             if (requestedValue == value) return;
             // ReSharper restore CompareOfFloatsByEqualityOperator
-            if (DataChanged != null) DataChanged(this, new IniDataChangedEventArgs<double>(requestedValue, value));
-            Set(value.ToString());
             requestedValue = value;
+            Set(value.ToString());
         }
-
-        public new event EventHandler<IniDataChangedEventArgs<double>> DataChanged;
     }
     public class BooleanData : StringData, IIniData<bool>
     {
@@ -293,12 +268,9 @@
         public void Set(bool value)
         {
             if (value == requestedValue) return;
-            if (DataChanged != null) DataChanged(this, new IniDataChangedEventArgs<bool>(requestedValue, value));
-            Set(value.ToString());
             requestedValue = value;
+            Set(value.ToString());
         }
-
-        public new event EventHandler<IniDataChangedEventArgs<bool>> DataChanged;
     }
     public class YesNoData : StringData, IIniData<bool>
     {
@@ -316,12 +288,9 @@
         public void Set(bool value)
         {
             if (requestedValue == value) return;
-            if (DataChanged != null) DataChanged(this, new IniDataChangedEventArgs<bool>(requestedValue, value));
-            Set(value.ToString());
             requestedValue = value;
+            Set(value ? "Yes" : "No");
         }
-
-        public new event EventHandler<IniDataChangedEventArgs<bool>> DataChanged;
     }
     public class PointData : StringData, IIniData<Point>
     {
@@ -339,12 +308,9 @@
         public void Set(Point value)
         {
             if (requestedValue == value) return;
-            if (DataChanged != null) DataChanged(this, new IniDataChangedEventArgs<Point>(requestedValue, value));
-            Set(value.ToString());
             requestedValue = value;
+            Set(value.ToString());
         }
-
-        public new event EventHandler<IniDataChangedEventArgs<Point>> DataChanged;
     }
     public class ColorData : StringData, IIniData<Color>
     {
@@ -365,12 +331,9 @@
         public void Set(Color value)
         {
             if (requestedValue == value) return;
-            if (DataChanged != null) DataChanged(this, new IniDataChangedEventArgs<Color>(requestedValue, value));
-            Set(value.ToString());
             requestedValue = value;
+            Set(value.ToString());
         }
-
-        public new event EventHandler<IniDataChangedEventArgs<Color>> DataChanged;
     }
 
     public class StringListData : IniSection, IIniData<List<string>>
@@ -406,7 +369,6 @@
         public void Set(List<string> value)
         {
             if (requestedValue == value) return;
-            if (DataChanged != null) DataChanged(this, new IniDataChangedEventArgs<List<string>>(requestedValue, value));
             requestedValue = value.ToList();    // create a copy
             var count = value.Count;
             countData.Set(count);
@@ -415,55 +377,38 @@
                 data.DataKey = i.ToString();
                 data.Set(value[i]);
             }
+            if (DataChanged != null) DataChanged(this, EventArgs.Empty);
         }
 
-        public event EventHandler<IniDataChangedEventArgs<List<string>>> DataChanged;
+        public void ResetToDefault()
+        {
+            Set(new List<string>());
+        }
+
+        public event EventHandler DataChanged;
     }
-    public class DoubleListData : IniSection, IIniData<List<double>>
+    public class DoubleListData : StringListData, IIniData<List<double>>
     {
         public DoubleListData(IniFile iniFile, string sectionName) : base(iniFile, sectionName)
         {
-            data = new DoubleData(this, null, double.NaN);
-            countData = new Int32Data(this, "Count", -1);
-            Get();
         }
-
-        private readonly DoubleData data;
-        private readonly Int32Data countData;
-
+        
         private List<double> requestedValue;
         private bool requested;
 
-        public List<double> Get()
+        public new List<double> Get()
         {
             if (!requested)
             {
+                requestedValue = base.Get().Select(double.Parse).ToList();
                 requested = true;
-                requestedValue = new List<double>();
-                var count = countData.Get();
-                for (var i = 0; i < count; i++)
-                {
-                    data.DataKey = i.ToString();
-                    requestedValue.Add(data.Get());
-                }
             }
-            return requestedValue.ToList(); // create a copy
+            return requestedValue;
         }
         public void Set(List<double> value)
         {
-            if (requestedValue == value) return;
-            if (DataChanged != null) DataChanged(this, new IniDataChangedEventArgs<List<double>>(requestedValue, value));
-            requestedValue = value.ToList();    // create a copy
-            var count = value.Count;
-            countData.Set(count);
-            for (var i = 0; i < count; i++)
-            {
-                data.DataKey = i.ToString();
-                data.Set(value[i]);
-            }
+            Set(value.Select(i => i.ToString()).ToList());
         }
-
-        public event EventHandler<IniDataChangedEventArgs<List<double>>> DataChanged;
     }
 
     public class StringDictionaryData : IniSection, IIniDataWithParam<string, string>

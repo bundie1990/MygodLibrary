@@ -80,7 +80,7 @@
 
         private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
-            if (msg == DWMMessages.WmDWMCompositionChanged || msg == DWMMessages.WmDWMNcRenderingChanged)
+            if (msg == DwmMessages.WmDwmCompositionChanged || msg == DwmMessages.WmDwmNcRenderingChanged)
             {
                 if (AeroGlassCompositionChanged != null)
                 {
@@ -117,16 +117,18 @@
 
         #endregion
 
-        #region Customs
+        #region <Mygod> Aero event
 
         private void UpdateAero(object sender = null, SizeChangedEventArgs e = null)
         {
             OnAeroEnabledChanged(AeroGlassCompositionEnabled);
         }
+
         private void UpdateAero(object sender, AeroGlassCompositionChangedEventArgs e)
         {
             OnAeroEnabledChanged(e.GlassAvailable);
         }
+
         protected void OnAeroEnabledChanged(bool aeroGlassCompositionEnabled)
         {
             try
@@ -136,8 +138,9 @@
                     ResetAeroGlass();
                     SetAeroGlassTransparency();
                     InvalidateVisual();
-                    if (Environment.OSVersion.VersionString.StartsWith("6.1")) Resources["GlowingEffect"] = new DropShadowEffect
-                        { Color = Colors.White, ShadowDepth = 0, RenderingBias = RenderingBias.Quality, BlurRadius = 8 };
+                    if (Environment.OSVersion.Version.Major == 6 && Environment.OSVersion.Version.Minor <= 1)   // vista & 7
+                        Resources["GlowingEffect"] = new DropShadowEffect 
+                            { Color = Colors.White, ShadowDepth = 0, RenderingBias = RenderingBias.Quality, BlurRadius = 8 };
                 }
                 else
                 {
@@ -172,10 +175,10 @@
         public bool GlassAvailable { get; private set; }
     }
 
-    internal static class DWMMessages
+    internal static class DwmMessages
     {
-        internal const int WmDWMCompositionChanged = 0x031E;
-        internal const int WmDWMNcRenderingChanged = 0x031F;
+        internal const int WmDwmCompositionChanged = 0x031E;
+        internal const int WmDwmNcRenderingChanged = 0x031F;
     }
 
     [StructLayout(LayoutKind.Sequential)]

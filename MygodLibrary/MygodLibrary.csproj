@@ -122,8 +122,6 @@
     <Compile Include="Windows\[DragDrop]\WpfDragSourceHelper.cs" />
     <Compile Include="Windows\[DragDrop]\WpfDropTargetHelper.cs" />
     <Compile Include="Windows\[DragDrop]\WpfDropTargetHelperExtensions.cs" />
-    <Compile Include="Windows\Dwm\DesktopWindowManagerNativeMethods.cs" />
-    <Compile Include="Windows\Dwm\GlassEvents.cs" />
     <Compile Include="Windows\GlassWindow.cs" />
   </ItemGroup>
   <ItemGroup>
