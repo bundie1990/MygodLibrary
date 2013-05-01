@@ -13,7 +13,8 @@
     <AssemblyName>MygodLibrary</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -23,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -45,6 +47,27 @@
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>MygodLibraryKey.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>bin\Release\MygodLibrary.XML</DocumentationFile>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -53,6 +76,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
@@ -83,10 +107,36 @@
     <Compile Include="Windows\Automation\Peers\AutoCompleteBoxAutomationPeer.cs" />
     <Compile Include="Windows\Controls\AnimatedExpander.cs" />
     <Compile Include="Windows\Controls\AnimatedProgressBar.cs" />
+    <Compile Include="Windows\Controls\CommandLink.xaml.cs">
+      <DependentUpon>CommandLink.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\Controls\DataGridAutoCompleteColumn.cs" />
     <Compile Include="Windows\Controls\DragCanvas.cs" />
     <Compile Include="Windows\Controls\Reflection.cs" />
     <Compile Include="Windows\Controls\WorldOfGooCursor.cs" />
+    <Compile Include="Windows\Dialogs\Interop\ComDlgResources.cs" />
+    <Compile Include="Windows\Dialogs\Interop\COMGuids.cs" />
+    <Compile Include="Windows\Dialogs\Interop\ErrorHelper.cs" />
+    <Compile Include="Windows\Dialogs\Interop\IProgressDialog.cs" />
+    <Compile Include="Windows\Dialogs\Interop\ShellComInterfaces.cs" />
+    <Compile Include="Windows\Dialogs\Interop\ShellWrapperDefinitions.cs" />
+    <Compile Include="Windows\Dialogs\Interop\Win32Resources.cs" />
+    <Compile Include="Windows\Dialogs\SafeHandles.cs" />
+    <Compile Include="Windows\Dialogs\[TaskDialog]\Converters.cs" />
+    <Compile Include="Windows\Dialogs\NativeMethods.cs" />
+    <Compile Include="Windows\Dialogs\[TaskDialog]\RelayCommand.cs" />
+    <Compile Include="Windows\Dialogs\SafeNativeMethods.cs" />
+    <Compile Include="Windows\Dialogs\[TaskDialog]\TaskDialog.cs" />
+    <Compile Include="Windows\Dialogs\[TaskDialog]\TaskDialog.xaml.cs">
+      <DependentUpon>TaskDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Dialogs\[TaskDialog]\TaskDialogEvents.cs" />
+    <Compile Include="Windows\Dialogs\[TaskDialog]\TaskDialogInterop.cs" />
+    <Compile Include="Windows\Dialogs\[TaskDialog]\TaskDialogResult.cs" />
+    <Compile Include="Windows\Dialogs\[TaskDialog]\TaskDialogTypes.cs" />
+    <Compile Include="Windows\Dialogs\[TaskDialog]\TaskDialogViewModel.cs" />
+    <Compile Include="Windows\Dialogs\UnsafeNativeMethods.cs" />
+    <Compile Include="Windows\Dialogs\[TaskDialog]\ActiveTaskDialog.cs" />
     <Compile Include="Windows\Controls\[WPFToolkit]\BindingEvaluator.cs" />
     <Compile Include="Windows\Controls\[WPFToolkit]\InteractionHelper.cs" />
     <Compile Include="Windows\Controls\[WPFToolkit]\IUpdateVisualState.cs" />
@@ -109,6 +159,28 @@
     <Compile Include="Windows\Controls\[ZoomAndPan]\ZoomAndPanControl.cs" />
     <Compile Include="Windows\Controls\[ZoomAndPan]\ZoomAndPanControl_IScrollInfo.cs" />
     <Compile Include="Windows\CurrentApp.cs" />
+    <Compile Include="Windows\Dialogs\[ProgressDialog]\AnimationResource.cs" />
+    <Compile Include="Windows\Dialogs\[CredentialDialog]\CredentialDialog.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Windows\Dialogs\[CredentialDialog]\CredentialDialog.designer.cs">
+      <DependentUpon>CredentialDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Dialogs\[CredentialDialog]\CredentialException.cs" />
+    <Compile Include="Windows\Dialogs\[CredentialDialog]\DownlevelTextMode.cs" />
+    <Compile Include="Windows\Dialogs\[FileDialog]\FileDialog.cs" />
+    <Compile Include="Windows\Dialogs\[FileDialog]\FileDialogEvents.cs" />
+    <Compile Include="Windows\Dialogs\FolderBrowserDialog.cs" />
+    <Compile Include="Windows\Dialogs\[FileDialog]\OpenFileDialog.cs" />
+    <Compile Include="Windows\Dialogs\[ProgressDialog]\ProgressBarStyle.cs" />
+    <Compile Include="Windows\Dialogs\[ProgressDialog]\ProgressDialog.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Windows\Dialogs\[ProgressDialog]\ProgressDialog.designer.cs">
+      <DependentUpon>ProgressDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Dialogs\[FileDialog]\SaveFileDialog.cs" />
+    <Compile Include="Windows\Dialogs\[ProgressDialog]\ShellAnimation.cs" />
     <Compile Include="Windows\TreeHelper.cs" />
     <Compile Include="Windows\UserActivityHook.cs" />
     <Compile Include="Windows\[DragDrop]\DataObject.cs" />
@@ -128,10 +200,65 @@
     <None Include="MygodLibraryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <DesignData Include="DesignData\DesignerCommandLink.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </DesignData>
+    <DesignData Include="DesignData\DesignerTaskDialogViewModel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </DesignData>
     <Page Include="Themes\Generic.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Windows\Common.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Controls\CommandLink.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Dialogs\[TaskDialog]\TaskDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\cmdarr1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\cmdarr2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\exparr-down1.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\exparr-down2.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\exparr-down3.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\exparr-up1.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\exparr-up2.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\exparr-up3.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\shield-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\shield-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Windows\Dialogs\[ProgressDialog]\ProgressDialog.resx">
+      <DependentUpon>ProgressDialog.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -47,6 +47,36 @@
             }
         }
         public static string FileName { get { return Process.GetCurrentProcess().MainModule.FileName; } }
+
+        public static Stream GetResourceStream(string path)
+        {
+            // ReSharper disable PossibleNullReferenceException
+            return Application.GetResourceStream(new Uri(path, UriKind.Relative)).Stream;
+            // ReSharper restore PossibleNullReferenceException
+        }
+        public static string ReadResourceText(string path)
+        {
+            try
+            {
+                return new StreamReader(GetResourceStream(path)).ReadToEnd();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+        public static byte[] ReadResourceBytes(string path)
+        {
+            try
+            {
+                var reader = new BinaryReader(GetResourceStream(path));
+                return reader.ReadBytes((int)(reader.BaseStream.Length));
+            }
+            catch
+            {
+                return null;
+            }
+        }
     }
 
     public class IconExtractor : IDisposable
