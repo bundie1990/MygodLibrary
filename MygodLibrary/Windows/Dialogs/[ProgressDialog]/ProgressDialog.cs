@@ -468,7 +468,7 @@ namespace Mygod.Windows.Dialogs
         /// </exception>
         public void ShowDialog(Window owner = null, object argument = null)
         {
-            RunProgressDialog(owner == null ? NativeMethods.GetActiveWindow() : new WindowInteropHelper(owner).Handle, argument);
+            RunProgressDialog(owner == null ? IntPtr.Zero : new WindowInteropHelper(owner).Handle, argument);
         }
 
         /// <summary>

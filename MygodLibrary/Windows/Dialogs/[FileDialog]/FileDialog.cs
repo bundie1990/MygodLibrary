@@ -549,7 +549,7 @@ namespace Mygod.Windows.Dialogs
                 return DownlevelDialog.ShowDialog(owner);
             else
             {
-                IntPtr ownerHandle = owner == null ? NativeMethods.GetActiveWindow() : new WindowInteropHelper(owner).Handle;
+                IntPtr ownerHandle = owner == null ? IntPtr.Zero : new WindowInteropHelper(owner).Handle;
                 return RunFileDialog(ownerHandle);
             }
         }

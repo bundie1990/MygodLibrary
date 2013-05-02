@@ -9,7 +9,8 @@
     /// <summary>
     /// 指示操作进度。当改变时有动画。
     /// </summary>
-    [TemplatePart(Name = "PART_GlowRect", Type = typeof(FrameworkElement)), TemplatePart(Name = "PART_Indicator", Type = typeof(FrameworkElement)), 
+    [TemplatePart(Name = "PART_GlowRect", Type = typeof(FrameworkElement)),
+     TemplatePart(Name = "PART_Indicator", Type = typeof(FrameworkElement)), 
      TemplatePart(Name = "PART_Track", Type = typeof(FrameworkElement))]
     public class AnimatedProgressBar : ProgressBar
     {

@@ -494,7 +494,7 @@ namespace Mygod.Windows.Dialogs
                 storedCredentials = true;
             }
 
-            IntPtr ownerHandle = owner == null ? NativeMethods.GetActiveWindow() : new WindowInteropHelper(owner).Handle;
+            IntPtr ownerHandle = owner == null ? IntPtr.Zero : new WindowInteropHelper(owner).Handle;
             bool result;
             if (NativeMethods.IsWindowsVistaOrLater)
                 result = PromptForCredentialsCredUIWin(ownerHandle, storedCredentials);

@@ -167,6 +167,9 @@
             get { return (bool)GetValue(FullscreenModeProperty); }
             set { SetValue(FullscreenModeProperty, value); }
         }
+        /// <summary>
+        /// 获取或设置是否暂停鼠标。暂停后动画仍将继续但鼠标位置将不再改变。
+        /// </summary>
         public bool Paused
         {
             get { return (bool) GetValue(PausedProperty); }

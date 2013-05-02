@@ -28,8 +28,8 @@ namespace Mygod.Windows.Dialogs
          ), DefaultProperty("SelectedPath"), Description("Prompts the user to select a folder.")]
     public sealed class FolderBrowserDialog
     {
-        private string _description;
-        private string _selectedPath;
+        private string description;
+        private string selectedPath;
 
         /// <summary>
         ///     Creates a new instance of the <see cref="FolderBrowserDialog" /> class.
@@ -61,7 +61,7 @@ namespace Mygod.Windows.Dialogs
          Description(
              "The descriptive text displayed above the tree view control in the dialog box, or below the list view control in the Vista style dialog."
              )]
-        public string Description { get { return _description ?? string.Empty; } set { _description = value; } }
+        public string Description { get { return description ?? string.Empty; } set { description = value; } }
 
         /// <summary>
         ///     Gets or sets the root folder where the browsing starts from. This property has no effect if the Vista style
@@ -89,7 +89,7 @@ namespace Mygod.Windows.Dialogs
              "System.Windows.Forms.Design.SelectedPathEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
              , typeof(UITypeEditor)), Description("The path selected by the user."), DefaultValue(""), Localizable(true),
          Category("Folder Browsing")]
-        public string SelectedPath { get { return _selectedPath ?? string.Empty; } set { _selectedPath = value; } }
+        public string SelectedPath { get { return selectedPath ?? string.Empty; } set { selectedPath = value; } }
 
         /// <summary>
         ///     Gets or sets a value indicating whether the New Folder button appears in the folder browser dialog box. This
@@ -132,22 +132,11 @@ namespace Mygod.Windows.Dialogs
         /// </summary>
         public void Reset()
         {
-            _description = string.Empty;
+            description = string.Empty;
             UseDescriptionForTitle = false;
-            _selectedPath = string.Empty;
+            selectedPath = string.Empty;
             RootFolder = Environment.SpecialFolder.Desktop;
             ShowNewFolderButton = true;
-        }
-
-        /// <summary>
-        ///     Displays the folder browser dialog.
-        /// </summary>
-        /// <returns>
-        ///     If the user clicks the OK button, <see langword="true" /> is returned; otherwise, <see langword="false" />.
-        /// </returns>
-        public bool? ShowDialog()
-        {
-            return ShowDialog(null);
         }
 
         /// <summary>
@@ -157,9 +146,9 @@ namespace Mygod.Windows.Dialogs
         /// <returns>
         ///     If the user clicks the OK button, <see langword="true" /> is returned; otherwise, <see langword="false" />.
         /// </returns>
-        public bool? ShowDialog(Window owner)
+        public bool? ShowDialog(Window owner = null)
         {
-            IntPtr ownerHandle = owner == null ? NativeMethods.GetActiveWindow() : new WindowInteropHelper(owner).Handle;
+            IntPtr ownerHandle = owner == null ? IntPtr.Zero : new WindowInteropHelper(owner).Handle;
             return IsVistaFolderDialogSupported ? RunDialog(ownerHandle) : RunDialogDownlevel(ownerHandle);
         }
 
@@ -199,13 +188,12 @@ namespace Mygod.Windows.Dialogs
                     throw new InvalidOperationException("Unable to retrieve the root folder.");
             try
             {
-                var info = new NativeMethods.BROWSEINFO();
-                info.hwndOwner = owner;
-                info.lpfn = BrowseCallbackProc;
-                info.lpszTitle = Description;
-                info.pidlRoot = rootItemIdList;
-                info.pszDisplayName = new string('\0', 260);
-                info.ulFlags = NativeMethods.BrowseInfoFlags.NewDialogStyle | NativeMethods.BrowseInfoFlags.ReturnOnlyFsDirs;
+                var info = new NativeMethods.BROWSEINFO
+                {
+                    hwndOwner = owner, lpfn = BrowseCallbackProc, lpszTitle = Description, pidlRoot = rootItemIdList,
+                    pszDisplayName = new string('\0', 260),
+                    ulFlags = NativeMethods.BrowseInfoFlags.NewDialogStyle | NativeMethods.BrowseInfoFlags.ReturnOnlyFsDirs
+                };
                 if (!ShowNewFolderButton)
                     info.ulFlags |= NativeMethods.BrowseInfoFlags.NoNewFolderButton;
                 resultItemIdList = NativeMethods.SHBrowseForFolder(ref info);
@@ -221,40 +209,36 @@ namespace Mygod.Windows.Dialogs
             }
             finally
             {
-                if (rootItemIdList != null)
-                {
-                    IMalloc malloc = NativeMethods.SHGetMalloc();
-                    malloc.Free(rootItemIdList);
-                    Marshal.ReleaseComObject(malloc);
-                }
-                if (resultItemIdList != null)
-                    Marshal.FreeCoTaskMem(resultItemIdList);
+                IMalloc malloc = NativeMethods.SHGetMalloc();
+                malloc.Free(rootItemIdList);
+                Marshal.ReleaseComObject(malloc);
+                Marshal.FreeCoTaskMem(resultItemIdList);
             }
         }
 
         private void SetDialogProperties(IFileDialog dialog)
         {
             // Description
-            if (!string.IsNullOrEmpty(_description))
+            if (!string.IsNullOrEmpty(description))
                 if (UseDescriptionForTitle)
-                    dialog.SetTitle(_description);
+                    dialog.SetTitle(description);
                 else
                 {
                     var customize = (IFileDialogCustomize) dialog;
-                    customize.AddText(0, _description);
+                    customize.AddText(0, description);
                 }
 
             dialog.SetOptions(NativeMethods.FOS.FOS_PICKFOLDERS | NativeMethods.FOS.FOS_FORCEFILESYSTEM
                                                                 | NativeMethods.FOS.FOS_FILEMUSTEXIST);
 
-            if (!string.IsNullOrEmpty(_selectedPath))
+            if (!string.IsNullOrEmpty(selectedPath))
             {
-                string parent = Path.GetDirectoryName(_selectedPath);
+                string parent = Path.GetDirectoryName(selectedPath);
                 if (parent == null || !Directory.Exists(parent))
-                    dialog.SetFileName(_selectedPath);
+                    dialog.SetFileName(selectedPath);
                 else
                 {
-                    string folder = Path.GetFileName(_selectedPath);
+                    string folder = Path.GetFileName(selectedPath);
                     dialog.SetFolder(NativeMethods.CreateItemFromParsingName(parent));
                     dialog.SetFileName(folder);
                 }
@@ -265,7 +249,7 @@ namespace Mygod.Windows.Dialogs
         {
             IShellItem item;
             dialog.GetResult(out item);
-            item.GetDisplayName(NativeMethods.SIGDN.SIGDN_FILESYSPATH, out _selectedPath);
+            item.GetDisplayName(NativeMethods.SIGDN.SIGDN_FILESYSPATH, out selectedPath);
         }
 
         private int BrowseCallbackProc(IntPtr hwnd, NativeMethods.FolderBrowserDialogMessage msg, IntPtr lParam, IntPtr wParam)

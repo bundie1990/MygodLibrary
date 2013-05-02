@@ -6,7 +6,7 @@
     using System.Windows.Media;
 
     /// <summary>
-    /// 给指定元素加上投影。（长度=子元素.Margin.Bottom）
+    /// 给指定元素加上反射。（长度=子元素.Margin.Bottom）
     /// </summary>
     public class Reflection : Decorator
     {

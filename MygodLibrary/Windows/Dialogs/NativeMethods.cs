@@ -59,9 +59,6 @@ namespace Mygod.Windows.Dialogs
 
         #endregion
 
-        [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
-        public static extern IntPtr GetActiveWindow();
-
         #region File Operations Definitions
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto, Pack = 4)]
@@ -428,7 +425,7 @@ namespace Mygod.Windows.Dialogs
         public delegate int BrowseCallbackProc(IntPtr hwnd, FolderBrowserDialogMessage msg, IntPtr lParam, IntPtr wParam);
 
         [Flags]
-        public enum BrowseInfoFlags
+        public enum BrowseInfoFlags : uint
         {
             ReturnOnlyFsDirs = 0x00000001,
             DontGoBelowDomain = 0x00000002,
@@ -449,16 +446,18 @@ namespace Mygod.Windows.Dialogs
             BrowseFileJunctions = 0x00010000
         }
 
+        [StructLayout(LayoutKind.Sequential)]
         public struct BROWSEINFO
         {
             public IntPtr hwndOwner;
-            public int iImage;
-            public IntPtr lParam;
-            public BrowseCallbackProc lpfn;
-            public string lpszTitle;
             public IntPtr pidlRoot;
             public string pszDisplayName;
+            [MarshalAs(UnmanagedType.LPTStr)]
+            public string lpszTitle;
             public BrowseInfoFlags ulFlags;
+            public BrowseCallbackProc lpfn;
+            public IntPtr lParam;
+            public int iImage;
         }
 
         [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
