@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.IO;
     using System.Linq;
     using System.Runtime.InteropServices;
@@ -59,7 +60,7 @@
             {
                 var temp = new StringBuilder((int)returnStringLong);
                 SafeNativeMethods.GetPrivateProfileString(section, key, noText, temp, returnStringLong, GetFilePath());
-                return Convert.ToString(temp);
+                return temp.ToString();
             }
             return noText;
         }
@@ -212,7 +213,7 @@
     }
     public class Int32Data : StringData, IIniData<int>
     {
-        public Int32Data(IniSection section, string key, int value) : base(section, key, value.ToString())
+        public Int32Data(IniSection section, string key, int value) : base(section, key, value.ToString(CultureInfo.InvariantCulture))
         {
             Get();
         }
@@ -221,18 +222,18 @@
 
         public new int Get()
         {
-            return requestedValue = int.Parse(base.Get());
+            return requestedValue = int.Parse(base.Get(), CultureInfo.InvariantCulture);
         }
         public void Set(int value)
         {
             if (requestedValue == value) return;
             requestedValue = value;
-            Set(value.ToString());
+            Set(value.ToString(CultureInfo.InvariantCulture));
         }
     }
     public class DoubleData : StringData, IIniData<double>
     {
-        public DoubleData(IniSection section, string key, double value) : base(section, key, value.ToString())
+        public DoubleData(IniSection section, string key, double value) : base(section, key, value.ToString(CultureInfo.InvariantCulture))
         {
             Get();
         }
@@ -241,7 +242,7 @@
 
         public new double Get()
         {
-            return requestedValue = double.Parse(base.Get());
+            return requestedValue = double.Parse(base.Get(), CultureInfo.InvariantCulture);
         }
         public void Set(double value)
         {
@@ -249,12 +250,12 @@
             if (requestedValue == value) return;
             // ReSharper restore CompareOfFloatsByEqualityOperator
             requestedValue = value;
-            Set(value.ToString());
+            Set(value.ToString(CultureInfo.InvariantCulture));
         }
     }
     public class BooleanData : StringData, IIniData<bool>
     {
-        public BooleanData(IniSection inisection, string key, bool defaultvalue) : base(inisection, key, defaultvalue.ToString())
+        public BooleanData(IniSection inisection, string key, bool defaultvalue) : base(inisection, key, defaultvalue.ToString(CultureInfo.InvariantCulture))
         {
             Get();
         }
@@ -269,7 +270,7 @@
         {
             if (value == requestedValue) return;
             requestedValue = value;
-            Set(value.ToString());
+            Set(value.ToString(CultureInfo.InvariantCulture));
         }
     }
     public class YesNoData : StringData, IIniData<bool>
@@ -295,7 +296,7 @@
     public class PointData : StringData, IIniData<Point>
     {
         public PointData(IniSection section, string key, Point value)
-            : base(section, key, value.ToString())
+            : base(section, key, value.ToString(CultureInfo.InvariantCulture))
         {
         }
 
@@ -309,13 +310,13 @@
         {
             if (requestedValue == value) return;
             requestedValue = value;
-            Set(value.ToString());
+            Set(value.ToString(CultureInfo.InvariantCulture));
         }
     }
     public class ColorData : StringData, IIniData<Color>
     {
         public ColorData(IniSection section, string key, Color value)
-            : base(section, key, value.ToString())
+            : base(section, key, value.ToString(CultureInfo.InvariantCulture))
         {
             defaultValue = value;
         }
@@ -332,7 +333,7 @@
         {
             if (requestedValue == value) return;
             requestedValue = value;
-            Set(value.ToString());
+            Set(value.ToString(CultureInfo.InvariantCulture));
         }
     }
 
@@ -360,7 +361,7 @@
                 var count = countData.Get();
                 for (var i = 0; i < count; i++)
                 {
-                    data.DataKey = i.ToString();
+                    data.DataKey = i.ToString(CultureInfo.InvariantCulture);
                     requestedValue.Add(data.Get());
                 }
             }
@@ -374,7 +375,7 @@
             countData.Set(count);
             for (var i = 0; i < count; i++)
             {
-                data.DataKey = i.ToString();
+                data.DataKey = i.ToString(CultureInfo.InvariantCulture);
                 data.Set(value[i]);
             }
             if (DataChanged != null) DataChanged(this, EventArgs.Empty);
@@ -400,14 +401,14 @@
         {
             if (!requested)
             {
-                requestedValue = base.Get().Select(double.Parse).ToList();
+                requestedValue = base.Get().Select(value => double.Parse(value, CultureInfo.InvariantCulture)).ToList();
                 requested = true;
             }
             return requestedValue;
         }
         public void Set(List<double> value)
         {
-            Set(value.Select(i => i.ToString()).ToList());
+            Set(value.Select(i => i.ToString(CultureInfo.InvariantCulture)).ToList());
         }
     }
 
@@ -442,22 +443,22 @@
     public class Int32DoubleDictionaryData : StringDictionaryData, IIniDataWithParam<int, double>
     {
         public Int32DoubleDictionaryData(IniFile iniFile, string sectionName, double value = double.NaN)
-            : base(iniFile, sectionName, value.ToString())
+            : base(iniFile, sectionName, value.ToString(CultureInfo.InvariantCulture))
         {
         }
 
         public double Get(int key)
         {
-            return double.Parse(Get(key.ToString()));
+            return double.Parse(Get(key.ToString(CultureInfo.InvariantCulture)), CultureInfo.InvariantCulture);
         }
         public void Set(int key, double data)
         {
-            Set(key.ToString(), data.ToString());
+            Set(key.ToString(CultureInfo.InvariantCulture), data.ToString(CultureInfo.InvariantCulture));
         }
 
         public IIniData<double> GetData(int key)
         {
-            return new DoubleData(this, key.ToString(), double.Parse(Value));
+            return new DoubleData(this, key.ToString(CultureInfo.InvariantCulture), double.Parse(Value, CultureInfo.InvariantCulture));
         }
     }
 }

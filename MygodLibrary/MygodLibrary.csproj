@@ -114,6 +114,7 @@
     <Compile Include="Windows\Controls\DragCanvas.cs" />
     <Compile Include="Windows\Controls\Reflection.cs" />
     <Compile Include="Windows\Controls\WorldOfGooCursor.cs" />
+    <Compile Include="Windows\CursorWindow.cs" />
     <Compile Include="Windows\Dialogs\Interop\ComDlgResources.cs" />
     <Compile Include="Windows\Dialogs\Interop\COMGuids.cs" />
     <Compile Include="Windows\Dialogs\Interop\ErrorHelper.cs" />
@@ -181,8 +182,9 @@
     </Compile>
     <Compile Include="Windows\Dialogs\[FileDialog]\SaveFileDialog.cs" />
     <Compile Include="Windows\Dialogs\[ProgressDialog]\ShellAnimation.cs" />
+    <Compile Include="Windows\Input\SystemCursor.cs" />
     <Compile Include="Windows\TreeHelper.cs" />
-    <Compile Include="Windows\UserActivityHook.cs" />
+    <Compile Include="Windows\Input\UserActivityHook.cs" />
     <Compile Include="Windows\[DragDrop]\DataObject.cs" />
     <Compile Include="Runtime\InteropServices\ComTypes\DataObjectExtensions.cs" />
     <Compile Include="Windows\[DragDrop]\DragDropHelper.cs" />

@@ -1,4 +1,4 @@
-namespace Mygod.Windows
+namespace Mygod.Windows.Input
 {
     using System;
     using System.Diagnostics;
