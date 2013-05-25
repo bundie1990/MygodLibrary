@@ -275,7 +275,7 @@
     }
     public class YesNoData : StringData, IIniData<bool>
     {
-        public YesNoData(IniSection inisection, string key, bool defaultvalue)
+        public YesNoData(IniSection inisection, string key, bool defaultvalue = false)
             : base(inisection, key, defaultvalue ? "Yes" : "No")
         {
             Get();

@@ -24,7 +24,7 @@ namespace Mygod.Windows.Dialogs
 		/// Use this to make application-wide defaults, such as for
 		/// the caption.
 		/// </remarks>
-		public static TaskDialogOptions Default;
+		public static TaskDialogOptions Default = new TaskDialogOptions();
 
 		/// <summary>
 		/// The owner window of the task dialog box.
@@ -305,4 +305,46 @@ namespace Mygod.Windows.Dialogs
 		/// <param name="icon">The icon to set.</param>
 		void UpdateFooterIcon(Icon icon);
 	}
+
+    public enum TaskDialogType
+    {
+        None, Information, Error, Warning, YesNoQuestion, YesNoCancelQuestion
+    }
+
+    internal static class TaskDialogTypeHelper
+    {
+        public static string GetTitle(TaskDialogType type)
+        {
+            switch (type)
+            {
+                case TaskDialogType.Information: return "信息";
+                case TaskDialogType.Error: return "错误";
+                case TaskDialogType.Warning: return "警告";
+                case TaskDialogType.YesNoQuestion: case TaskDialogType.YesNoCancelQuestion: return "询问";
+                default: return null;
+            }
+        }
+
+        public static TaskDialogIcon GetIcon(TaskDialogType type)
+        {
+            switch (type)
+            {
+                case TaskDialogType.Information: case TaskDialogType.YesNoQuestion:
+                case TaskDialogType.YesNoCancelQuestion: return TaskDialogIcon.Information;
+                case TaskDialogType.Error: return TaskDialogIcon.Error;
+                case TaskDialogType.Warning: return TaskDialogIcon.Warning;
+                default: return TaskDialogIcon.None;
+            }
+        }
+
+        public static TaskDialogButtons GetButtons(TaskDialogType type)
+        {
+            switch (type)
+            {
+                case TaskDialogType.YesNoQuestion: return TaskDialogButtons.Yes | TaskDialogButtons.No;
+                case TaskDialogType.YesNoCancelQuestion: return TaskDialogButtons.Yes | TaskDialogButtons.No | TaskDialogButtons.Cancel;
+                default: return TaskDialogButtons.OK;
+            }
+        }
+    }
 }

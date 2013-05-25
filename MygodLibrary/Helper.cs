@@ -1,12 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-
-namespace Mygod
+﻿namespace Mygod
 {
     using System;
     using System.Windows.Threading;
-    using System.Windows;
     using System.Windows.Media;
     using System.Text;
 
@@ -102,6 +97,10 @@ namespace Mygod
         public static bool Contains(this string s, string value, StringComparison comparison)
         {
             return s.IndexOf(value, comparison) >= 0;
+        }
+
+        public static void DoNothing<T>(this T stuff)
+        {
         }
     }
 }

@@ -43,6 +43,7 @@ namespace Mygod.Windows.Dialogs
 		/// Close common button. If selected Task Dialog will return this value.
 		/// </summary>
 		Close = 0x0020,
+        Default = -1
 	}
 
 	/// <summary>
@@ -55,6 +56,10 @@ namespace Mygod.Windows.Dialogs
 		/// No Icon.
 		/// </summary>
 		None = 0,
+        /// <summary>
+        /// Use the icon specified in type.
+        /// </summary>
+        Default = 1,
 		/// <summary>
 		/// System warning icon.
 		/// </summary>

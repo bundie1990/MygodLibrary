@@ -80,6 +80,7 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="UIAutomationProvider" />
     <Reference Include="UIAutomationTypes" />
     <Reference Include="WindowsBase" />
@@ -111,6 +112,7 @@
       <DependentUpon>CommandLink.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\Controls\DataGridAutoCompleteColumn.cs" />
+    <Compile Include="Windows\Controls\DataGridEx.cs" />
     <Compile Include="Windows\Controls\DragCanvas.cs" />
     <Compile Include="Windows\Controls\Reflection.cs" />
     <Compile Include="Windows\Controls\WorldOfGooCursor.cs" />
@@ -197,6 +199,7 @@
     <Compile Include="Windows\[DragDrop]\WpfDropTargetHelper.cs" />
     <Compile Include="Windows\[DragDrop]\WpfDropTargetHelperExtensions.cs" />
     <Compile Include="Windows\GlassWindow.cs" />
+    <Compile Include="Xml\Linq\XHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="MygodLibraryKey.pfx" />

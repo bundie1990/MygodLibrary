@@ -119,27 +119,24 @@ namespace Mygod.Windows.Dialogs
 		/// footer icon to display.
 		/// </param>
 		/// <returns></returns>
-        public static TaskDialogSimpleResult ShowMessage(Window owner = null, string title = null, string mainInstruction = null, string content = null, string expandedInfo = null, string verificationText = null, string footerText = null, TaskDialogButtons buttons = TaskDialogButtons.Close, TaskDialogIcon mainIcon = TaskDialogIcon.None, TaskDialogIcon footerIcon = TaskDialogIcon.None)
+        public static TaskDialogSimpleResult Show(Window owner = null, string title = null, string mainInstruction = null, string content = null, string expandedInfo = null, string verificationText = null, string footerText = null, TaskDialogButtons buttons = TaskDialogButtons.Default, int? defaultButtonIndex = null, TaskDialogIcon mainIcon = TaskDialogIcon.Default, TaskDialogIcon footerIcon = TaskDialogIcon.Default, TaskDialogType type = TaskDialogType.None)
 		{
-			TaskDialogOptions options = TaskDialogOptions.Default;
+            TaskDialogOptions options = new TaskDialogOptions();
 
-			if (owner != null)
-				options.Owner = owner;
-			if (!String.IsNullOrEmpty(title))
-				options.Title = title;
-			if (!String.IsNullOrEmpty(mainInstruction))
-				options.MainInstruction = mainInstruction;
-			if (!String.IsNullOrEmpty(content))
-				options.Content = content;
-			if (!String.IsNullOrEmpty(expandedInfo))
-				options.ExpandedInfo = expandedInfo;
-			if (!String.IsNullOrEmpty(verificationText))
-				options.VerificationText = verificationText;
-			if (!String.IsNullOrEmpty(footerText))
-				options.FooterText = footerText;
-			options.Buttons = buttons;
-			options.MainIcon = mainIcon;
-			options.FooterIcon = footerIcon;
+            options.Owner = owner;
+		    options.Title = string.IsNullOrEmpty(title) ? TaskDialogTypeHelper.GetTitle(type) : title;
+			options.MainInstruction = mainInstruction;
+			options.Content = content;
+			options.ExpandedInfo = expandedInfo;
+			options.VerificationText = verificationText;
+			options.Buttons = buttons == TaskDialogButtons.Default ? TaskDialogTypeHelper.GetButtons(type) : buttons;
+			options.MainIcon = mainIcon == TaskDialogIcon.Default ? TaskDialogTypeHelper.GetIcon(type) : mainIcon;
+		    options.DefaultButtonIndex = defaultButtonIndex;
+            if (!string.IsNullOrEmpty(footerText))
+            {
+                options.FooterText = footerText;
+                options.FooterIcon = footerIcon == TaskDialogIcon.Default ? TaskDialogTypeHelper.GetIcon(type) : footerIcon;
+            }
 
 			return Show(options).Result;
 		}
