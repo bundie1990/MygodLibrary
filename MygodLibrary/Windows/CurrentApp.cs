@@ -28,7 +28,23 @@
             {
                 try
                 {
-                    return mainIcon ?? (mainIcon = IconExtractor.GetIcon(Path));
+                    return mainIcon ?? (mainIcon = IconExtractor.GetBitmapSource(Path));
+                }
+                catch (NullReferenceException)
+                {
+                    return null;
+                }
+            }
+        }
+
+        private static Icon drawingIcon;
+        public static Icon DrawingIcon
+        {
+            get
+            {
+                try
+                {
+                    return drawingIcon ?? (drawingIcon = IconExtractor.GetIcon(Path));
                 }
                 catch (NullReferenceException)
                 {
@@ -407,9 +423,14 @@
             return splitIcons;
         }
 
-        public static BitmapSource GetIcon(string executionPath, int index = 0)
+        public static Icon GetIcon(string executionPath, int index = 0)
         {
-            var icon = SplitIcon(new IconExtractor(executionPath).GetIcon(index)).OrderByDescending(i => i.Height).First();
+            return SplitIcon(new IconExtractor(executionPath).GetIcon(index)).OrderByDescending(i => i.Height).First();
+        }
+
+        public static BitmapSource GetBitmapSource(string executionPath, int index = 0)
+        {
+            var icon = GetIcon(executionPath, index);
             return icon == null ? null
                        : Imaging.CreateBitmapSourceFromHIcon(icon.Handle, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
         }

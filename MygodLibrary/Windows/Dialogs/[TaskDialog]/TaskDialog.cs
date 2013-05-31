@@ -119,7 +119,7 @@ namespace Mygod.Windows.Dialogs
 		/// footer icon to display.
 		/// </param>
 		/// <returns></returns>
-        public static TaskDialogSimpleResult Show(Window owner = null, string title = null, string mainInstruction = null, string content = null, string expandedInfo = null, string verificationText = null, string footerText = null, TaskDialogButtons buttons = TaskDialogButtons.Default, int? defaultButtonIndex = null, TaskDialogIcon mainIcon = TaskDialogIcon.Default, TaskDialogIcon footerIcon = TaskDialogIcon.Default, TaskDialogType type = TaskDialogType.None)
+        public static TaskDialogSimpleResult Show(Window owner = null, string mainInstruction = null, string content = null, TaskDialogType type = TaskDialogType.None, string title = null, string expandedInfo = null, string verificationText = null, string footerText = null, TaskDialogButtons buttons = TaskDialogButtons.Default, int? defaultButtonIndex = null, TaskDialogIcon mainIcon = TaskDialogIcon.Default, TaskDialogIcon footerIcon = TaskDialogIcon.Default)
 		{
             TaskDialogOptions options = new TaskDialogOptions();
 
