@@ -39,6 +39,11 @@ namespace Mygod.Xml.Linq
             return XDocument.Parse(File.ReadAllText(path));
         }
 
+        public static void AddIfNotEmpty(this XElement element, XElement child)
+        {
+            if (child.HasElements || child.HasAttributes) element.Add(child);
+        }
+
         public static string GetString(this XContainer container)
         {
             var builder = new StringBuilder();

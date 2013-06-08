@@ -284,7 +284,7 @@
         private bool requestedValue;
         public new bool Get()
         {
-            return requestedValue = (base.Get() ?? string.Empty).ToLower() == "yes";
+            return requestedValue = (base.Get() ?? string.Empty).ToLowerInvariant() == "yes";
         }
         public void Set(bool value)
         {

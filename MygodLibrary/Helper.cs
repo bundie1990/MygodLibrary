@@ -102,5 +102,15 @@
         public static void DoNothing<T>(this T stuff)
         {
         }
+
+        internal static string UrlDecode(this string str)
+        {
+            return Uri.UnescapeDataString(str);
+        }
+
+        internal static string UrlEncode(this string str)
+        {
+            return Uri.EscapeDataString(str);
+        }
     }
 }
