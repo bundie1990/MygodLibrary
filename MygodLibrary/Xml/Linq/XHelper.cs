@@ -68,6 +68,7 @@ namespace Mygod.Xml.Linq
         {
             if (typeof(T).IsSubclassOf(typeof(Enum))) return element.GetAttributeValueEnum<T>(name);
             var parse = typeof(T).GetMethod("Parse", BindingFlags.Public | BindingFlags.Static, null, new[] { typeof(string) }, null);
+            if (typeof(T) == typeof(string)) return (T) (object) element.GetAttributeValue(name);
             if (parse == null || parse.ReturnType != typeof(T)) throw new NotSupportedException(
                 "You must define a public static T Parse(string) method before using GetAttributeValueWithDefault<T>!");
             return (T)parse.Invoke(null, new object[] { element.GetAttributeValue(name) });
@@ -95,6 +96,7 @@ namespace Mygod.Xml.Linq
             var str = element.GetAttributeValue(name);
             if (string.IsNullOrWhiteSpace(str)) return defaultValue;
             var parse = typeof(T).GetMethod("Parse", BindingFlags.Public | BindingFlags.Static, null, new[] { typeof(string) }, null);
+            if (typeof(T) == typeof(string)) return (T)(object)str;
             if (parse == null || parse.ReturnType != typeof(T)) throw new NotSupportedException(
                 "You must define a public static T Parse(string) method before using GetAttributeValueWithDefault<T>!");
             return (T) parse.Invoke(null, new object[] { str });

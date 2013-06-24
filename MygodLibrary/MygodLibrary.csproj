@@ -187,6 +187,7 @@
     <Compile Include="Windows\Dialogs\[FileDialog]\SaveFileDialog.cs" />
     <Compile Include="Windows\Dialogs\[ProgressDialog]\ShellAnimation.cs" />
     <Compile Include="Windows\Input\SystemCursor.cs" />
+    <Compile Include="Windows\StartupManager.cs" />
     <Compile Include="Windows\TreeHelper.cs" />
     <Compile Include="Windows\Input\UserActivityHook.cs" />
     <Compile Include="Windows\[DragDrop]\DataObject.cs" />

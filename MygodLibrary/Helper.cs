@@ -1,4 +1,7 @@
-﻿namespace Mygod
+﻿using System.ComponentModel;
+using System.Runtime.InteropServices;
+
+namespace Mygod
 {
     using System;
     using System.Windows.Threading;
@@ -103,14 +106,20 @@
         {
         }
 
-        internal static string UrlDecode(this string str)
+        public static string UrlDecode(this string str)
         {
             return Uri.UnescapeDataString(str);
         }
 
-        internal static string UrlEncode(this string str)
+        public static string UrlEncode(this string str)
         {
             return Uri.EscapeDataString(str);
+        }
+
+        public static void CheckLastWin32Error()
+        {
+            var error = Marshal.GetLastWin32Error();
+            if (error != 0) throw new Win32Exception(error);
         }
     }
 }
