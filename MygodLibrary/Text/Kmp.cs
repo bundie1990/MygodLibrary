@@ -16,22 +16,22 @@ namespace Mygod.Text
         /// 创建一个KMP类。如果要匹配多次，则创建实例比调用静态方法的执行效率高。
         /// </summary>
         /// <param name="pattern">用于匹配的字符串。</param>
-        public Kmp(string pattern)
+        public Kmp(byte[] pattern)
         {
             Pattern = pattern;
         }
 
         private int[] next;
-        private string pattern;
+        private byte[] pattern;
         /// <summary>
         /// 获取或设置模式串，即用于匹配的字符串。
         /// </summary>
-        public string Pattern
+        public byte[] Pattern
         {
             get { return pattern; }
             set
             {
-                if (string.IsNullOrEmpty(value)) throw new ArgumentException("模式串不能为空串！");
+                if (value == null || value.Length == 0) throw new ArgumentException("模式串不能为空串！");
                 pattern = value;
                 next = new int[pattern.Length];
                 next[0] = -1;
@@ -49,12 +49,42 @@ namespace Mygod.Text
         }
 
         /// <summary>
+        /// 一个更加低级、可扩展的 KMP 搜索实现。
+        /// </summary>
+        public class Searcher
+        {
+            public Searcher(Kmp kmp)
+            {
+                Kmp = kmp;
+            }
+            public Searcher(byte[] kmp)
+            {
+                Kmp = new Kmp(kmp);
+            }
+
+            public Kmp Kmp { get; private set; }
+            private int i;
+
+            public bool Enter(byte next)
+            {
+                if (i == -1) i++;
+                else if (next == Kmp.Pattern[i])
+                {
+                    i++;
+                    if (i >= Kmp.Pattern.Length) return true;
+                }
+                else i = Kmp.next[i];
+                return false;
+            }
+        }
+
+        /// <summary>
         /// KMP匹配字符串，效率为O(N+M)，其中N是text.Length，M是pattern.Length。
         /// </summary>
         /// <param name="text">要查找的字符串。</param>
         /// <param name="pos">开始搜索的位置。</param>
         /// <returns>返回查找到的位置，如果没有匹配则返回-1。</returns>
-        public int Match(string text, int pos = 0)
+        public int Match(byte[] text, int pos = 0)
         {
             var i = 0;
             while (i < pattern.Length && pos < text.Length)
@@ -112,7 +142,7 @@ namespace Mygod.Text
         /// </summary>
         /// <param name="text">要查找的字符串。</param>
         /// <returns>返回所有找到的位置。</returns>
-        public IEnumerable<int> MatchAll(string text)
+        public IEnumerable<int> MatchAll(byte[] text)
         {
             var pos = Match(text);
             while (pos >= 0)
@@ -138,7 +168,7 @@ namespace Mygod.Text
         /// <param name="pattern">要搜索的字符串</param>
         /// <param name="pos">起始搜索的位置。</param>
         /// <returns>返回查找到的位置，如果没有匹配则返回-1。</returns>
-        public static int Match(string text, string pattern, int pos = 0)
+        public static int Match(byte[] text, byte[] pattern, int pos = 0)
         {
             return new Kmp(pattern).Match(text, pos);
         }
@@ -149,7 +179,7 @@ namespace Mygod.Text
         /// <param name="stream">要匹配的流。</param>
         /// <param name="pattern">要匹配的字符串。</param>
         /// <returns>返回是否找到匹配串，如果找到，偏移量会被设置在匹配的串开始。</returns>
-        public static bool Match(Stream stream, string pattern)
+        public static bool Match(Stream stream, byte[] pattern)
         {
             return new Kmp(pattern).Match(stream);
         }
@@ -159,7 +189,7 @@ namespace Mygod.Text
         /// <param name="text">要查找的字符串。</param>
         /// <param name="pattern">要匹配的字符串。</param>
         /// <returns>返回找到的所有位置。</returns>
-        public static IEnumerable<int> MatchAll(string text, string pattern)
+        public static IEnumerable<int> MatchAll(byte[] text, byte[] pattern)
         {
             return new Kmp(pattern).MatchAll(text);
         }
@@ -169,7 +199,7 @@ namespace Mygod.Text
         /// <param name="stream">要查找的流。</param>
         /// <param name="pattern">要匹配的字符串。</param>
         /// <returns>返回所有找到的位置。</returns>
-        public static IEnumerable<long> MatchAll(Stream stream, string pattern)
+        public static IEnumerable<long> MatchAll(Stream stream, byte[] pattern)
         {
             return new Kmp(pattern).MatchAll(stream);
         }

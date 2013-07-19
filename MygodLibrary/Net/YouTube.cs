@@ -14,7 +14,7 @@ namespace Mygod.Net
             private Video(WebClient client, string id)
             {
                 var videoInfo = client.DownloadString(
-                    string.Format("http://www.youtube.com/get_video_info?video_id={0}&eurl=http://mygodstudio.tk/", this.id = id));
+                    string.Format("http://www.youtube.com/get_video_info?video_id={0}&eurl=http://mygod.apphb.com/", this.id = id));
                 information = (from info in videoInfo.Split('&') let i = info.IndexOf('=') 
                                select new { Key = info.Substring(0, i), Value = info.Substring(i + 1) })
                     .ToDictionary(pair => pair.Key, pair => pair.Value);

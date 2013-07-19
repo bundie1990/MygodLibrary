@@ -108,11 +108,13 @@ namespace Mygod
 
         public static string UrlDecode(this string str)
         {
+            if (str == null) return null;
             return Uri.UnescapeDataString(str);
         }
 
         public static string UrlEncode(this string str)
         {
+            if (str == null) return null;
             return Uri.EscapeDataString(str);
         }
 

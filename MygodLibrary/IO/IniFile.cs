@@ -1,4 +1,6 @@
-﻿namespace Mygod.IO
+﻿using System.Collections;
+
+namespace Mygod.IO
 {
     using System;
     using System.Collections.Generic;
@@ -20,15 +22,18 @@
         [DllImport("kernel32", CharSet = CharSet.Unicode, SetLastError = true)]
         internal static extern uint GetPrivateProfileString(string section, string key, string def, StringBuilder retVal, 
                                                             uint size, string filePath);
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+        internal static extern uint GetPrivateProfileSectionNames(IntPtr lpszReturnBuffer, uint nSize, string lpFileName);
     }
     /// <summary>
     /// 提供Ini文件的操作类。
     /// </summary>
-    public class IniFile
+    public class IniFile : IEnumerable<IniSection>
     {
         #region 参数
 
-        private readonly string iniFilePath = string.Empty, executableDir;
+        public string Path { get; private set; }
         private readonly uint returnStringLong;
 
         #endregion
@@ -38,13 +43,12 @@
         /// <summary>
         /// 创建新的IniFile。
         /// </summary>
-        /// <param name="sFilePath">Ini文件路径。</param>
-        /// <param name="iStringLong">文本长度，如果超过会被截断。</param>
-        public IniFile(string sFilePath, uint iStringLong = 1024)
+        /// <param name="filePath">Ini文件路径。</param>
+        /// <param name="stringLong">文本长度，如果超过会被截断。</param>
+        public IniFile(string filePath, uint stringLong = 32767)
         {
-            iniFilePath = sFilePath;
-            returnStringLong = iStringLong;
-            executableDir = AppDomain.CurrentDomain.BaseDirectory;
+            Path = filePath;
+            returnStringLong = stringLong;
         }
 
         /// <summary>
@@ -56,10 +60,10 @@
         /// <returns></returns>
         public string ReadIniData(string section, string key, string noText = null)
         {
-            if (File.Exists(GetFilePath()))
+            if (File.Exists(Path))
             {
                 var temp = new StringBuilder((int)returnStringLong);
-                SafeNativeMethods.GetPrivateProfileString(section, key, noText, temp, returnStringLong, GetFilePath());
+                SafeNativeMethods.GetPrivateProfileString(section, key, noText, temp, returnStringLong, Path);
                 return temp.ToString();
             }
             return noText;
@@ -73,16 +77,31 @@
         /// <param name="value">要写入的值。</param>
         public void WriteIniData(string section, string key, string value)
         {
-            Task.Factory.StartNew(() => SafeNativeMethods.WritePrivateProfileString(section, key, value, GetFilePath()));
-        }
-
-        private string GetFilePath()
-        {
-            return iniFilePath.Substring(1, 1) == ":" ? iniFilePath : 
-                (iniFilePath.Substring(0, 1) == @"\" ? executableDir.Substring(0, 2) + iniFilePath : executableDir + @"\" + iniFilePath);
+            Task.Factory.StartNew(() => SafeNativeMethods.WritePrivateProfileString(section, key, value, Path));
         }
 
         #endregion
+
+        public IEnumerator<IniSection> GetEnumerator()
+        {
+            var pReturnedString = Marshal.AllocCoTaskMem((int) returnStringLong);
+            var bytesReturned = SafeNativeMethods.GetPrivateProfileSectionNames(pReturnedString, returnStringLong, Path);
+            if (bytesReturned == 0)
+            {
+                Marshal.FreeCoTaskMem(pReturnedString);
+                yield break;
+            }
+            var local = Marshal.PtrToStringAnsi(pReturnedString, (int)bytesReturned);
+            Marshal.FreeCoTaskMem(pReturnedString);
+            foreach (var name in local.Substring(0, local.Length - 1).Split('\0')) yield return new IniSection(this, name);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        public IniSection this[string name] { get { return new IniSection(this, name); } }
     }
 
     /// <summary>
@@ -95,7 +114,7 @@
         /// </summary>
         /// <param name="iniFile">属于的Ini文件。</param>
         /// <param name="sectionName">节名。</param>
-        public IniSection(IniFile iniFile, string sectionName)
+        protected internal IniSection(IniFile iniFile, string sectionName)
         {
             IniFile = iniFile;
             Name = sectionName;
@@ -109,6 +128,14 @@
         /// 获取当前节节名。
         /// </summary>
         public string Name { get; private set; }
+
+        /// <summary>
+        /// 从该文件中删除此节。
+        /// </summary>
+        public void Remove()
+        {
+            SafeNativeMethods.WritePrivateProfileString(Name, null, null, IniFile.Path);
+        }
     }
 
     /// <summary>
@@ -229,6 +256,27 @@
             if (requestedValue == value) return;
             requestedValue = value;
             Set(value.ToString(CultureInfo.InvariantCulture));
+        }
+    }
+    public class Int64HexData : StringData, IIniData<long>
+    {
+        public Int64HexData(IniSection section, string key, long value = 0)
+            : base(section, key, value.ToString("X", CultureInfo.InvariantCulture))
+        {
+            Get();
+        }
+
+        private long requestedValue;
+
+        public new long Get()
+        {
+            return requestedValue = long.Parse(base.Get(), NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+        }
+        public void Set(long value)
+        {
+            if (requestedValue == value) return;
+            requestedValue = value;
+            Set(value.ToString("X", CultureInfo.InvariantCulture));
         }
     }
     public class DoubleData : StringData, IIniData<double>

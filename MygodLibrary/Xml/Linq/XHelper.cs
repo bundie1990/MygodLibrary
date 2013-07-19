@@ -3,16 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Xml;
 using System.Xml.Linq;
 
 namespace Mygod.Xml.Linq
 {
     public static class XHelper
     {
-        public static readonly XmlWriterSettings WriterSettings = new XmlWriterSettings { Indent = true, Encoding = Encoding.UTF8 };
-
         public static XElement ElementCaseInsensitive(this XContainer container, XName name)
         {
             return container.ElementsCaseInsensitive(name).FirstOrDefault();
@@ -42,13 +38,6 @@ namespace Mygod.Xml.Linq
         public static void AddIfNotEmpty(this XElement element, XElement child)
         {
             if (child.HasElements || child.HasAttributes) element.Add(child);
-        }
-
-        public static string GetString(this XContainer container)
-        {
-            var builder = new StringBuilder();
-            using (var xw = XmlWriter.Create(builder, WriterSettings)) new XDocument(container).Save(xw);
-            return builder.ToString();
         }
 
         public static XElement GetElement(this XContainer container, XName name)
