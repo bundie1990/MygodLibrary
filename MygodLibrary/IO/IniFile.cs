@@ -33,7 +33,7 @@ namespace Mygod.IO
     {
         #region 参数
 
-        public string Path { get; private set; }
+        public string FilePath { get; private set; }
         private readonly uint returnStringLong;
 
         #endregion
@@ -47,7 +47,7 @@ namespace Mygod.IO
         /// <param name="stringLong">文本长度，如果超过会被截断。</param>
         public IniFile(string filePath, uint stringLong = 32767)
         {
-            Path = filePath;
+            FilePath = Path.GetFullPath(filePath);
             returnStringLong = stringLong;
         }
 
@@ -60,10 +60,10 @@ namespace Mygod.IO
         /// <returns></returns>
         public string ReadIniData(string section, string key, string noText = null)
         {
-            if (File.Exists(Path))
+            if (File.Exists(FilePath))
             {
                 var temp = new StringBuilder((int)returnStringLong);
-                SafeNativeMethods.GetPrivateProfileString(section, key, noText, temp, returnStringLong, Path);
+                SafeNativeMethods.GetPrivateProfileString(section, key, noText, temp, returnStringLong, FilePath);
                 return temp.ToString();
             }
             return noText;
@@ -77,7 +77,7 @@ namespace Mygod.IO
         /// <param name="value">要写入的值。</param>
         public void WriteIniData(string section, string key, string value)
         {
-            Task.Factory.StartNew(() => SafeNativeMethods.WritePrivateProfileString(section, key, value, Path));
+            Task.Factory.StartNew(() => SafeNativeMethods.WritePrivateProfileString(section, key, value, FilePath));
         }
 
         #endregion
@@ -85,7 +85,7 @@ namespace Mygod.IO
         public IEnumerator<IniSection> GetEnumerator()
         {
             var pReturnedString = Marshal.AllocCoTaskMem((int) returnStringLong);
-            var bytesReturned = SafeNativeMethods.GetPrivateProfileSectionNames(pReturnedString, returnStringLong, Path);
+            var bytesReturned = SafeNativeMethods.GetPrivateProfileSectionNames(pReturnedString, returnStringLong, FilePath);
             if (bytesReturned == 0)
             {
                 Marshal.FreeCoTaskMem(pReturnedString);
@@ -134,7 +134,7 @@ namespace Mygod.IO
         /// </summary>
         public void Remove()
         {
-            SafeNativeMethods.WritePrivateProfileString(Name, null, null, IniFile.Path);
+            SafeNativeMethods.WritePrivateProfileString(Name, null, null, IniFile.FilePath);
         }
     }
 
