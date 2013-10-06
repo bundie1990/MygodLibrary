@@ -306,6 +306,7 @@ namespace Mygod.Net
                 if (string.IsNullOrEmpty(fileName)) return url;
                 return url + "&title=" + fileName.Replace("\\", "＼").Replace("/", "／").Replace(":", "：").Replace("*", "＊")
                     .Replace("?", "？").Replace("\"", "＂").Replace("<", "＜").Replace(">", "＞").Replace("|", "｜")
+                    .Replace("%", "％").Replace("#", "＃")
                 // convert ALL THOSE GODDAMN THINGS or it will definitely go wrong
                     .UrlEncode().UrlEncode();
                 // double encode or non-ascii characters will go wrong in C# apps (HOLY SH*T THIS GODDAMN THING IS REALLY ANNOYING)

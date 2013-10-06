@@ -43,7 +43,7 @@ namespace Mygod.Xml.Linq
         public static XElement GetElement(this XContainer container, XName name)
         {
             var r = container.ElementCaseInsensitive(name);
-            if (r == null) throw new FileFormatException();
+            if (r == null) throw new FormatException();
             return r;
         }
 

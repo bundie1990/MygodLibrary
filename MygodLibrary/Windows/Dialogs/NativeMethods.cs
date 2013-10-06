@@ -451,7 +451,7 @@ namespace Mygod.Windows.Dialogs
         {
             public IntPtr hwndOwner;
             public IntPtr pidlRoot;
-            public string pszDisplayName;
+            public IntPtr pszDisplayName;
             [MarshalAs(UnmanagedType.LPTStr)]
             public string lpszTitle;
             public BrowseInfoFlags ulFlags;
@@ -471,7 +471,7 @@ namespace Mygod.Windows.Dialogs
 
         [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool SHGetPathFromIDList(IntPtr pidl, StringBuilder pszPath);
+        public static extern bool SHGetPathFromIDList(IntPtr pidl, IntPtr pszPath);
 
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
         public static extern IntPtr SendMessage(IntPtr hWnd, FolderBrowserDialogMessage msg, IntPtr wParam, string lParam);

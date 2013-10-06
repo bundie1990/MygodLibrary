@@ -186,12 +186,14 @@ namespace Mygod.Windows.Dialogs
             if (NativeMethods.SHGetSpecialFolderLocation(owner, RootFolder, ref rootItemIdList) != 0)
                 if (NativeMethods.SHGetSpecialFolderLocation(owner, 0, ref rootItemIdList) != 0)
                     throw new InvalidOperationException("Unable to retrieve the root folder.");
+            IntPtr hglobal = IntPtr.Zero, pszPath = IntPtr.Zero;
             try
             {
+                hglobal = Marshal.AllocHGlobal(260 * Marshal.SystemDefaultCharSize);
                 var info = new NativeMethods.BROWSEINFO
                 {
                     hwndOwner = owner, lpfn = BrowseCallbackProc, lpszTitle = Description, pidlRoot = rootItemIdList,
-                    pszDisplayName = new string('\0', 260),
+                    pszDisplayName = hglobal,
                     ulFlags = NativeMethods.BrowseInfoFlags.NewDialogStyle | NativeMethods.BrowseInfoFlags.ReturnOnlyFsDirs
                 };
                 if (!ShowNewFolderButton)
@@ -199,9 +201,9 @@ namespace Mygod.Windows.Dialogs
                 resultItemIdList = NativeMethods.SHBrowseForFolder(ref info);
                 if (resultItemIdList != IntPtr.Zero)
                 {
-                    var path = new StringBuilder(260);
-                    NativeMethods.SHGetPathFromIDList(resultItemIdList, path);
-                    SelectedPath = path.ToString();
+                    pszPath = Marshal.AllocHGlobal(260 * Marshal.SystemDefaultCharSize);
+                    NativeMethods.SHGetPathFromIDList(resultItemIdList, pszPath);
+                    SelectedPath = Marshal.PtrToStringAuto(pszPath);
                     return true;
                 }
                 else
@@ -213,6 +215,8 @@ namespace Mygod.Windows.Dialogs
                 malloc.Free(rootItemIdList);
                 Marshal.ReleaseComObject(malloc);
                 Marshal.FreeCoTaskMem(resultItemIdList);
+                if (pszPath != IntPtr.Zero) Marshal.FreeHGlobal(pszPath);
+                if (hglobal != IntPtr.Zero) Marshal.FreeHGlobal(hglobal);
             }
         }
 
@@ -263,10 +267,11 @@ namespace Mygod.Windows.Dialogs
                 case NativeMethods.FolderBrowserDialogMessage.SelChanged:
                     if (lParam != IntPtr.Zero)
                     {
-                        var path = new StringBuilder(260);
+                        var path = Marshal.AllocHGlobal(260 * Marshal.SystemDefaultCharSize);
                         bool validPath = NativeMethods.SHGetPathFromIDList(lParam, path);
                         NativeMethods.SendMessage(hwnd, NativeMethods.FolderBrowserDialogMessage.EnableOk, IntPtr.Zero,
                                                   validPath ? new IntPtr(1) : IntPtr.Zero);
+                        Marshal.FreeHGlobal(path);
                     }
                     break;
             }

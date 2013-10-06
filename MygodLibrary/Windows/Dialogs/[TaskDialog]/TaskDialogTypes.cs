@@ -308,7 +308,7 @@ namespace Mygod.Windows.Dialogs
 
     public enum TaskDialogType
     {
-        None, Information, Error, Warning, YesNoQuestion, YesNoCancelQuestion
+        None, Information, Error, Warning, YesNoQuestion, YesNoCancelQuestion, OKCancelQuestion
     }
 
     internal static class TaskDialogTypeHelper
@@ -320,7 +320,8 @@ namespace Mygod.Windows.Dialogs
                 case TaskDialogType.Information: return "信息";
                 case TaskDialogType.Error: return "错误";
                 case TaskDialogType.Warning: return "警告";
-                case TaskDialogType.YesNoQuestion: case TaskDialogType.YesNoCancelQuestion: return "询问";
+                case TaskDialogType.YesNoQuestion: case TaskDialogType.YesNoCancelQuestion: case TaskDialogType.OKCancelQuestion:
+                    return "询问";
                 default: return null;
             }
         }
@@ -329,8 +330,8 @@ namespace Mygod.Windows.Dialogs
         {
             switch (type)
             {
-                case TaskDialogType.Information: case TaskDialogType.YesNoQuestion:
-                case TaskDialogType.YesNoCancelQuestion: return TaskDialogIcon.Information;
+                case TaskDialogType.Information: case TaskDialogType.YesNoQuestion: case TaskDialogType.YesNoCancelQuestion:
+                case TaskDialogType.OKCancelQuestion: return TaskDialogIcon.Information;
                 case TaskDialogType.Error: return TaskDialogIcon.Error;
                 case TaskDialogType.Warning: return TaskDialogIcon.Warning;
                 default: return TaskDialogIcon.None;
@@ -343,6 +344,7 @@ namespace Mygod.Windows.Dialogs
             {
                 case TaskDialogType.YesNoQuestion: return TaskDialogButtons.Yes | TaskDialogButtons.No;
                 case TaskDialogType.YesNoCancelQuestion: return TaskDialogButtons.Yes | TaskDialogButtons.No | TaskDialogButtons.Cancel;
+                case TaskDialogType.OKCancelQuestion: return TaskDialogButtons.OK | TaskDialogButtons.Cancel;
                 default: return TaskDialogButtons.OK;
             }
         }

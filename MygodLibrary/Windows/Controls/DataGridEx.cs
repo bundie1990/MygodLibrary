@@ -27,7 +27,8 @@ namespace Mygod.Windows.Controls
             // Clear ItemBindingGroup so it isn't applied to new rows
             ItemBindingGroup = null;
             // Clear BindingGroup on already created rows
-            foreach (var row in from object item in Items select ItemContainerGenerator.ContainerFromItem(item) as FrameworkElement)
+            foreach (var row in Items.OfType<object>()
+                .Select(item => ItemContainerGenerator.ContainerFromItem(item) as FrameworkElement).Where(row => row != null))
                 row.BindingGroup = null;
         }
     }
