@@ -127,14 +127,13 @@ namespace Mygod.Net
                 this.url = url;
             }
 
-            private FmtStream(VideoFormat videoFormat, VideoEncodings videoEncoding, int videoWidth, int videoHeight,
+            private FmtStream(VideoFormat videoFormat, VideoEncodings videoEncoding, int videoHeight,
                               double? videoMinBitrate, double? videoMaxBitrate, AudioEncodings audioEncoding, int audioMinChannels,
                               int audioMaxChannels, int audioSamplingRate, int? audioBitrate, string url, Video parent)
                 : this(parent, url)
             {
                 Format = videoFormat;
                 VideoEncoding = videoEncoding;
-                MaxVideoWidth = videoWidth;
                 MaxVideoHeight = videoHeight;
                 VideoMinBitrate = videoMinBitrate;
                 VideoMaxBitrate = videoMaxBitrate;
@@ -168,100 +167,148 @@ namespace Mygod.Net
                 switch (itag)
                 {
                     case 0:     //OUTDATED, 4 Unknown
-                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatFLV, VideoEncodings.Undefined, 400, 240, null, null,
+                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatFLV, VideoEncodings.Undefined, 240, null, null,
                                                                            AudioEncodings.MP3, 1, 1, 22050, null, u, parent);
                         yield break;
                     case 5:
-                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatFLV, VideoEncodings.SorensonH263, 400, 240, 0.25, 0.25,
+                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatFLV, VideoEncodings.SorensonH263, 240, 0.25, 0.25,
                                                                            AudioEncodings.MP3, 1, 2, 22050, 64, u, parent);
                         yield break;
                     case 6:
-                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatFLV, VideoEncodings.SorensonH263, 450, 270, 0.8, 0.8,
+                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatFLV, VideoEncodings.SorensonH263, 270, 0.8, 0.8,
                                                                            AudioEncodings.MP3, 1, 2, 44100, 64, u, parent);
                         yield break;
                     case 13:
-                        foreach (var u in urls) yield return new FmtStream(VideoFormat.Format3GP, VideoEncodings.MPEG4Visual, 176, 144, 0.5, 0.5,
+                        foreach (var u in urls) yield return new FmtStream(VideoFormat.Format3GP, VideoEncodings.MPEG4Visual, 144, 0.5, 0.5,
                                                                            AudioEncodings.AAC, 1, 1, 22050, 75, u, parent);
                         yield break;
                     case 17:
-                        foreach (var u in urls) yield return new FmtStream(VideoFormat.Format3GP, VideoEncodings.MPEG4Visual, 176, 144, 2, 2,
+                        foreach (var u in urls) yield return new FmtStream(VideoFormat.Format3GP, VideoEncodings.MPEG4VisualSimple, 144, 2, 2,
                                                                            AudioEncodings.AAC, 2, 2, 44100, 75, u, parent);
                         yield break;
                     case 18:
-                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatMP4, VideoEncodings.H264Baseline, 640, 360, 0.5, 0.5,
+                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatMP4, VideoEncodings.H264Baseline, 360, 0.5, 0.5,
                                                                            AudioEncodings.AAC, 2, 2, 44100, 96, u, parent);
                         yield break;
                     case 22:
-                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatMP4, VideoEncodings.H264High, 1280, 720, 2.0, 2.9,
+                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatMP4, VideoEncodings.H264High, 720, 2.0, 2.9,
                                                                            AudioEncodings.AAC, 2, 2, 44100, 152, u, parent);
                         yield break;
                     case 34:
-                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatFLV, VideoEncodings.H264Main, 640, 360, 0.5, 0.5,
+                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatFLV, VideoEncodings.H264Main, 360, 0.5, 0.5,
                                                                            AudioEncodings.AAC, 2, 2, 44100, 128, u, parent);
                         yield break;
                     case 35:
-                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatFLV, VideoEncodings.H264Main, 854, 480, 0.8, 1,
+                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatFLV, VideoEncodings.H264Main, 480, 0.8, 1,
                                                                            AudioEncodings.AAC, 2, 2, 44100, 128, u, parent);
                         yield break;
                     case 36:
-                        foreach (var u in urls) yield return new FmtStream(VideoFormat.Format3GP, VideoEncodings.MPEG4Visual, 400, 240, 0.8, 0.8,
+                        foreach (var u in urls) yield return new FmtStream(VideoFormat.Format3GP, VideoEncodings.MPEG4VisualSimple, 240, 0.8, 0.8,
                                                                            AudioEncodings.AAC, 1, 1, 22050, 75, u, parent);
                         yield break;
                     case 37:
-                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatMP4, VideoEncodings.H264High, 1920, 1080, 3.5, 5,
+                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatMP4, VideoEncodings.H264High, 1080, 3.5, 5,
                                                                            AudioEncodings.AAC, 2, 2, 44100, 152, u, parent);
                         yield break;
                     case 38:
-                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatMP4, VideoEncodings.H264High, 4096, 3072, 0, 0,
+                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatMP4, VideoEncodings.H264High, 3072, 0, 0,
                                                                            AudioEncodings.AAC, 2, 2, 44100, 152, u, parent);
                         yield break;
                     case 43:
-                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatWebM, VideoEncodings.VP8, 640, 360, 0.5, 0.5,
+                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatWebM, VideoEncodings.VP8, 360, 0.5, 0.5,
                                                                            AudioEncodings.Vorbis, 2, 2, 44100, 128, u, parent);
                         yield break;
                     case 44:
-                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatWebM, VideoEncodings.VP8, 854, 480, 1, 1,
+                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatWebM, VideoEncodings.VP8, 480, 1, 1,
                                                                            AudioEncodings.Vorbis, 2, 2, 44100, 128, u, parent);
                         yield break;
                     case 45:
-                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatWebM, VideoEncodings.VP8, 1280, 720, 2, 2,
+                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatWebM, VideoEncodings.VP8, 720, 2, 2,
                                                                            AudioEncodings.Vorbis, 2, 2, 44100, 192, u, parent);
                         yield break;
                     case 46:
-                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatWebM, VideoEncodings.VP8, 1920, 1080, 2, 2,
+                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatWebM, VideoEncodings.VP8, 1080, 2, 2,
                                                                            AudioEncodings.Vorbis, 2, 2, 44100, 192, u, parent);
                         yield break;
                     case 82:
-                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatMP4, VideoEncodings.H2643D, 640, 360, 0.5, 0.5,
+                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatMP4, VideoEncodings.H2643D, 360, 0.5, 0.5,
                                                                            AudioEncodings.AAC, 2, 2, 44100, 96, u, parent);
                         yield break;
                     case 83:
-                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatMP4, VideoEncodings.H2643D, 854, 240, 0.5, 0.5,
+                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatMP4, VideoEncodings.H2643D, 240, 0.5, 0.5,
                                                                            AudioEncodings.AAC, 2, 2, 44100, 152, u, parent);
                         yield break;
                     case 84:
-                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatMP4, VideoEncodings.H2643D, 1280, 720, 2, 2.9,
+                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatMP4, VideoEncodings.H2643D, 720, 2, 2.9,
                                                                            AudioEncodings.AAC, 2, 2, 44100, 152, u, parent);
                         yield break;
                     case 85:
-                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatMP4, VideoEncodings.H2643D, 1920, 520, 2, 2.9,
+                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatMP4, VideoEncodings.H2643D, 520, 2, 2.9,
                                                                            AudioEncodings.AAC, 2, 2, 44100, 152, u, parent);
                         yield break;
                     case 100:
-                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatWebM, VideoEncodings.VP83D, 640, 360, null, null,
+                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatWebM, VideoEncodings.VP83D, 360, null, null,
                                                                            AudioEncodings.Vorbis, 2, 2, 44100, 128, u, parent);
                         yield break;
                     case 101:
-                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatWebM, VideoEncodings.VP83D, 854, 480, null, null,
+                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatWebM, VideoEncodings.VP83D, 480, null, null,
                                                                            AudioEncodings.Vorbis, 2, 2, 44100, 192, u, parent);
                         yield break;
                     case 102:
-                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatWebM, VideoEncodings.VP83D, 1280, 720, null, null,
+                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatWebM, VideoEncodings.VP83D, 720, null, null,
                                                                            AudioEncodings.Vorbis, 2, 2, 44100, 192, u, parent);
                         yield break;
                     case 103:
-                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatWebM, VideoEncodings.VP83D, 1920, 540, null, null,
+                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatWebM, VideoEncodings.VP83D, 540, null, null,
                                                                            AudioEncodings.Vorbis, 2, 2, 44100, 192, u, parent);
+                        yield break;
+                    case 120:
+                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatFLV, VideoEncodings.H264MainL31, 720, 2, 2,
+                                                                           AudioEncodings.AAC, 0, 0, 0, 128, u, parent);
+                        yield break;
+                    case 133:
+                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatMP4, VideoEncodings.H264, 240, 0.2, 0.3,
+                                                                           AudioEncodings.None, 0, 0, 0, null, u, parent);
+                        yield break;
+                    case 134:
+                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatMP4, VideoEncodings.H264, 360, 0.3, 0.4,
+                                                                           AudioEncodings.None, 0, 0, 0, null, u, parent);
+                        yield break;
+                    case 135:
+                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatMP4, VideoEncodings.H264, 480, 0.5, 1,
+                                                                           AudioEncodings.None, 0, 0, 0, null, u, parent);
+                        yield break;
+                    case 136:
+                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatMP4, VideoEncodings.H264, 720, 1, 1.5,
+                                                                           AudioEncodings.None, 0, 0, 0, null, u, parent);
+                        yield break;
+                    case 137:
+                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatMP4, VideoEncodings.H264, 1080, 2, 2.9,
+                                                                           AudioEncodings.None, 0, 0, 0, null, u, parent);
+                        yield break;
+                    case 139:
+                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatMP4, VideoEncodings.None, 0, null, null,
+                                                                           AudioEncodings.AAC, 0, 0, 0, 48, u, parent);
+                        yield break;
+                    case 140:
+                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatMP4, VideoEncodings.None, 0, null, null,
+                                                                           AudioEncodings.AAC, 0, 0, 0, 128, u, parent);
+                        yield break;
+                    case 141:
+                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatMP4, VideoEncodings.None, 0, null, null,
+                                                                           AudioEncodings.AAC, 0, 0, 0, 256, u, parent);
+                        yield break;
+                    case 160:
+                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatMP4, VideoEncodings.H264, 144, 0.1, 0.1,
+                                                                           AudioEncodings.None, 0, 0, 0, null, u, parent);
+                        yield break;
+                    case 171:
+                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatWebM, VideoEncodings.None, 0, null, null,
+                                                                           AudioEncodings.Vorbis, 0, 0, 0, 128, u, parent);
+                        yield break;
+                    case 172:
+                        foreach (var u in urls) yield return new FmtStream(VideoFormat.FormatWebM, VideoEncodings.None, 0, null, null,
+                                                                           AudioEncodings.Vorbis, 0, 0, 0, 192, u, parent);
                         yield break;
                     default:
                         foreach (var u in urls) yield return new UnknownFmtStream(itag, u, parent);
@@ -272,7 +319,6 @@ namespace Mygod.Net
             // ReSharper disable MemberCanBePrivate.Global
             public readonly VideoFormat Format = VideoFormat.Undefined;
             public readonly VideoEncodings VideoEncoding = VideoEncodings.Undefined;
-            public readonly int MaxVideoWidth;
             public readonly int MaxVideoHeight;
             public readonly double? VideoMinBitrate;
             public readonly double? VideoMaxBitrate;
@@ -288,11 +334,13 @@ namespace Mygod.Net
             {
                 get
                 {
-                    return string.Format("视频格式：{0}{10}视频编码：{1}{10}视频最大大小：{2}x{3}{10}视频比特率：{4}MBps{10}" +
-                                         "音频编码：{5}{10}音频声道数：{6}{10}音频采样速率：{7}{10}音频比特率：{8}KBps{10}" +
-                                         "视频下载地址：{9}{10}", VideoFormatToString(), VideoEncodingsToString(), MaxVideoWidth, 
-                                         MaxVideoHeight, VideoBitrateToString(), AudioEncodingsToString(), ChannelsToString(), 
-                                         SamplingRate, AudioBitrate, url, Environment.NewLine);
+                    return string.Format("视频格式：{0}{6}视频编码：{1}{6}{2}音频编码：{3}{6}{4}视频下载地址：{5}{6}", VideoFormatToString(), 
+                                         VideoEncodingsToString(), VideoEncoding == VideoEncodings.None ? string.Empty
+                                            : string.Format("视频大小：{0}p{2}视频比特率：{1}MBps{2}", MaxVideoHeight, VideoBitrateToString(),
+                                                            Environment.NewLine), 
+                                         AudioEncodingsToString(), AudioEncoding == AudioEncodings.None ? string.Empty
+                                            : string.Format("音频声道数：{0}{3}音频采样速率：{1}{3}音频比特率：{2}KBps{3}", ChannelsToString(),
+                                                            SamplingRate, AudioBitrate, Environment.NewLine), url, Environment.NewLine);
                 }
             }
 
@@ -317,10 +365,8 @@ namespace Mygod.Net
                 if (other == null) throw new NotSupportedException();
                 if (this is UnknownFmtStream) if (other is UnknownFmtStream) return 0; else return -1;
                 if (other is UnknownFmtStream) return 1;
-                var mine = MaxVideoWidth * MaxVideoHeight;
-                var your = other.MaxVideoWidth * other.MaxVideoHeight;
-                if (mine > your) return 1;
-                if (mine < your) return -1;
+                if (MaxVideoHeight > other.MaxVideoHeight) return 1;
+                if (MaxVideoHeight < other.MaxVideoHeight) return -1;
                 if (VideoMaxBitrate > other.VideoMaxBitrate) return 1;
                 if (VideoMaxBitrate < other.VideoMaxBitrate) return -1;
                 if (MinChannels > other.MinChannels) return 1;
@@ -335,8 +381,10 @@ namespace Mygod.Net
 
             public override string ToString()
             {
-                return VideoFormatToString() + " " + MaxVideoWidth + "x" + MaxVideoHeight + " " + ChannelsToString() + " " + SamplingRate + "Hz" +
-                       (AudioEncoding == AudioEncodings.Undefined ? String.Empty : (" " + AudioEncodingsToString()));
+                return VideoFormatToString() + ' ' + VideoEncodingsToString()
+                    + (VideoEncoding == VideoEncodings.None ? string.Empty : " " + MaxVideoHeight + "p") + ' ' + AudioEncodingsToString()
+                    + (AudioEncoding == AudioEncodings.None ? string.Empty : ' ' + ChannelsToString() + ' ' + SamplingRate + "Hz"
+                        + (AudioEncoding == AudioEncodings.Undefined ? string.Empty : (" " + AudioEncodingsToString())));
             }
 
             // ReSharper disable MemberCanBePrivate.Global
@@ -383,7 +431,7 @@ namespace Mygod.Net
 
             public override string ToString()
             {
-                return string.Format("未知的FMT #{0} 类型：{1} 质量：{2} 请联系Mygod解决此问题", videoTypeCode, Type, Quality);
+                return string.Format("未知的FMT #{0} 类型：{1} 质量：{2} 请联系 Mygod 工作室™ 以解决此问题", videoTypeCode, Type, Quality);
             }
         }
 
@@ -433,22 +481,30 @@ namespace Mygod.Net
         public enum VideoEncodings
         {
             Undefined, 
+            None,
             SorensonH263, 
+            H264,
             H264Main,
             H264Baseline, 
             H264High,
             H2643D, 
+            H264MainL31,
             VP8, 
             VP83D, 
-            MPEG4Visual
+            MPEG4Visual,
+            MPEG4VisualSimple
         }
 
         private static string VideoEncodingsToString(VideoEncodings encoding)
         {
             switch (encoding)
             {
+                case VideoEncodings.None:
+                    return "无视频";
                 case VideoEncodings.SorensonH263:
                     return "Sorenson H.263";
+                case VideoEncodings.H264:
+                    return "MPEG-4 AVC (H.264)";
                 case VideoEncodings.H264Main:
                     return "MPEG-4 AVC (H.264) Main";
                 case VideoEncodings.H264Baseline:
@@ -457,12 +513,16 @@ namespace Mygod.Net
                     return "MPEG-4 AVC (H.264) High";
                 case VideoEncodings.H2643D:
                     return "MPEG-4 AVC (H.264) 3D";
+                case VideoEncodings.H264MainL31:
+                    return "MPEG-4 AVC (H.264) Main@L3.1";
                 case VideoEncodings.VP8:
                     return "VP8";
                 case VideoEncodings.VP83D:
                     return "VP8 3D";
                 case VideoEncodings.MPEG4Visual:
                     return "MPEG-4 Visual";
+                case VideoEncodings.MPEG4VisualSimple:
+                    return "MPEG-4 Visual Simple";
                 default:
                     return "未知视频解码";
             }
@@ -471,6 +531,7 @@ namespace Mygod.Net
         public enum AudioEncodings
         {
             Undefined,
+            None,
             AAC,
             MP3,
             Vorbis
@@ -480,6 +541,8 @@ namespace Mygod.Net
         {
             switch (encoding)
             {
+                case AudioEncodings.None:
+                    return "无音频";
                 case AudioEncodings.AAC:
                     return "AAC";
                 case AudioEncodings.MP3:
