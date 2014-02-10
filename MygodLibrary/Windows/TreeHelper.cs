@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Media3D;
 
 namespace Mygod.Windows
 {
@@ -10,7 +11,8 @@ namespace Mygod.Windows
         public static T FindVisualParent<T>(this DependencyObject source) where T : DependencyObject
         {
             while (source != null && !(source is T))
-                if (source is Visual) source = VisualTreeHelper.GetParent(source); else source = LogicalTreeHelper.GetParent(source);
+                if (source is Visual || source is Visual3D) source = VisualTreeHelper.GetParent(source);
+                else source = LogicalTreeHelper.GetParent(source);
             return source as T;
         }
 
@@ -25,6 +27,12 @@ namespace Mygod.Windows
                 if (childOfChild != null) return childOfChild;
             }
             return null;
+        }
+
+        public static T FindLogicalParent<T>(this DependencyObject source) where T : DependencyObject
+        {
+            while (source != null && !(source is T)) source = LogicalTreeHelper.GetParent(source);
+            return source as T;
         }
 
         /// <summary>

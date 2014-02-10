@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Drawing;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Interop;
+using Microsoft.Win32;
 
 namespace Mygod.Windows
 {
@@ -11,7 +15,6 @@ namespace Mygod.Windows
         {
             TopmostProperty.OverrideMetadata(typeof(CursorWindow), new FrameworkPropertyMetadata(true));
             WindowStyleProperty.OverrideMetadata(typeof(CursorWindow), new FrameworkPropertyMetadata(WindowStyle.None));
-            WindowStateProperty.OverrideMetadata(typeof(CursorWindow), new FrameworkPropertyMetadata(WindowState.Maximized));
             ResizeModeProperty.OverrideMetadata(typeof(CursorWindow), new FrameworkPropertyMetadata(ResizeMode.NoResize));
             AllowsTransparencyProperty.OverrideMetadata(typeof(CursorWindow), new FrameworkPropertyMetadata(true));
         }
@@ -36,6 +39,19 @@ namespace Mygod.Windows
         {
             handle = new WindowInteropHelper(this).Handle;
             SetWindowLong(handle, -20, GetWindowLong(handle, -20) | 0x80000 | 0x20);
+            UpdateSize(sender, e);
+            SystemEvents.DisplaySettingsChanged += UpdateSize;
+        }
+
+        private void UpdateSize(object sender, EventArgs e)
+        {
+            var rect = default(Rectangle);
+            rect = Screen.AllScreens.Select(screen => screen.Bounds)
+                .Aggregate(rect, (current, bounds) => current == default(Rectangle) ? bounds : Rectangle.Union(current, bounds));
+            Left = rect.Left;
+            Top = rect.Top;
+            Width = rect.Right - rect.Left;
+            Height = rect.Bottom - rect.Top;
         }
 
         public void BringWindowToTop()

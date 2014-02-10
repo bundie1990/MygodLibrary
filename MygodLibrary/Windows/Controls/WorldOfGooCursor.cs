@@ -206,9 +206,7 @@
                 }));
                 Thread.Sleep(TimeSpan.FromSeconds(1 / shrinkRate));
             }
-        // ReSharper disable FunctionNeverReturns
         }
-        // ReSharper restore FunctionNeverReturns
 
         private void Refresh(object sender, EventArgs e)
         {
@@ -243,18 +241,23 @@
                        + InhaledRadius + ExhaledRadius) / 2;
             var end = points.Last;
             var offset = 1;
-            // ReSharper disable PossibleNullReferenceException
-            if (end.Previous != null) while (end.Previous.Previous != null && (points.Last.Value - end.Previous.Previous.Value).Length < 1)
-            // ReSharper restore PossibleNullReferenceException
+            if (end.Previous != null)
+                while (end.Previous.Previous != null && (points.Last.Value - end.Previous.Previous.Value).Length < 1)
+                {
+                    end = end.Previous;
+                    offset++;
+                }
+            var pointOffset = new Point();
+            if (FullscreenMode)
             {
-                end = end.Previous;
-                offset++;
+                var window = this.FindVisualParent<Window>();
+                pointOffset = new Point(window.Left, window.Top);
             }
-            if (UseBezierCurve) BezierDraw(drawingContext, offset, size);
-            else NormalDraw(drawingContext, end, offset, size);
+            if (UseBezierCurve) BezierDraw(drawingContext, offset, size, pointOffset);
+            else NormalDraw(drawingContext, end, offset, size, pointOffset);
         }
 
-        private void NormalDraw(DrawingContext drawingContext, LinkedListNode<Point> end, int offset, double size)
+        private void NormalDraw(DrawingContext drawingContext, LinkedListNode<Point> end, int offset, double size, Point pointOffset)
         {
             var current = points.First;
             var i = 0;
@@ -263,7 +266,8 @@
             if (BorderThickness > 0) while (current != null && current.Previous != end)
             {
                 var radius = ((double)(i++ + offset) / points.Count * 3 + 1) * size / 4;
-                drawingContext.DrawEllipse(brush, null, current.Value, radius + BorderThickness, radius + BorderThickness);
+                drawingContext.DrawEllipse(brush, null, (Point) (current.Value - pointOffset),
+                                           radius + BorderThickness, radius + BorderThickness);
                 current = current.Next;
             }
             drawingContext.Pop();
@@ -274,13 +278,13 @@
             while (current != null && current.Previous != end)
             {
                 var radius = ((double)(i++ + offset) / points.Count * 3 + 1) * size / 4;
-                drawingContext.DrawEllipse(brush, null, current.Value, radius, radius);
+                drawingContext.DrawEllipse(brush, null, (Point)(current.Value - pointOffset), radius, radius);
                 current = current.Next;
             }
             drawingContext.Pop();
         }
 
-        private void BezierDraw(DrawingContext drawingContext, int offset, double size)
+        private void BezierDraw(DrawingContext drawingContext, int offset, double size, Point pointOffset)
         {
             var curve = BezierCurve.Bezier2D(points.Take(points.Count - offset + 1).ToArray(), points.Count - offset + 1);
             if (BorderThickness > 0)
@@ -290,7 +294,8 @@
                 for (var i = 0; i < curve.Length; i++)
                 {
                     var radius = ((double)(i + offset) / points.Count * 3 + 1) * size / 4;
-                    drawingContext.DrawEllipse(borderBrush, null, curve[i], radius + BorderThickness, radius + BorderThickness);
+                    drawingContext.DrawEllipse(borderBrush, null, (Point)(curve[i] - pointOffset),
+                                               radius + BorderThickness, radius + BorderThickness);
                 }
                 drawingContext.Pop();
             }
@@ -299,7 +304,7 @@
             for (var i = 0; i < curve.Length; i++)
             {
                 var radius = ((double)(i + offset) / points.Count * 3 + 1) * size / 4;
-                drawingContext.DrawEllipse(brush, null, curve[i], radius, radius);
+                drawingContext.DrawEllipse(brush, null, (Point)(curve[i] - pointOffset), radius, radius);
             }
             drawingContext.Pop();
         }
