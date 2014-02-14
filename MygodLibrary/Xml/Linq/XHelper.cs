@@ -20,6 +20,12 @@ namespace Mygod.Xml.Linq
                 .Where(e => name.LocalName.Equals(e.Name.LocalName, StringComparison.InvariantCultureIgnoreCase));
         }
 
+        public static IEnumerable<XElement> ElementsCaseInsensitive(this IEnumerable<XContainer> containers, XName name)
+        {
+            return containers.Elements()
+                .Where(e => name.LocalName.Equals(e.Name.LocalName, StringComparison.InvariantCultureIgnoreCase));
+        }
+
         public static XAttribute AttributeCaseInsensitive(this XElement element, XName name)
         {
             return element.AttributesCaseInsensitive(name).FirstOrDefault();
@@ -27,7 +33,14 @@ namespace Mygod.Xml.Linq
 
         public static IEnumerable<XAttribute> AttributesCaseInsensitive(this XElement element, XName name)
         {
-            return element.Attributes().Where(a => name.LocalName.Equals(a.Name.LocalName, StringComparison.InvariantCultureIgnoreCase));
+            return element.Attributes()
+                .Where(a => name.LocalName.Equals(a.Name.LocalName, StringComparison.InvariantCultureIgnoreCase));
+        }
+
+        public static IEnumerable<XAttribute> AttributesCaseInsensitive(this IEnumerable<XElement> elements, XName name)
+        {
+            return elements.Attributes()
+                .Where(a => name.LocalName.Equals(a.Name.LocalName, StringComparison.InvariantCultureIgnoreCase));
         }
 
         public static XDocument Load(string path)

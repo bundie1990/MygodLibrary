@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using System;
+using Microsoft.Win32;
 
 namespace Mygod.Windows
 {
@@ -9,12 +10,13 @@ namespace Mygod.Windows
 
         public static bool IsStartAtWindowsStartup(string applicationID)
         {
-            return Run.GetValue(applicationID) == '"' + CurrentApp.Path + '"';
+            return ('"' + CurrentApp.Path + '"')
+                .Equals(Run.GetValue(applicationID) as string, StringComparison.InvariantCultureIgnoreCase);
         }
         public static void SetStartAtWindowsStartup(string applicationID, bool start)
         {
             if (start) Run.SetValue(applicationID, '"' + CurrentApp.Path + '"');
-            else Run.DeleteValue(applicationID);
+            else Run.DeleteValue(applicationID, false);
         }
     }
 }

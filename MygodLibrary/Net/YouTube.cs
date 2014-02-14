@@ -435,7 +435,8 @@ namespace Mygod.Net
 
             public override string ToString()
             {
-                return string.Format("未知的FMT #{0} 类型：{1} 质量：{2} 请联系 Mygod 工作室™ 以解决此问题", videoTypeCode, Type, Quality);
+                return string.Format("未知的 FMT #{0} 类型：{1} 质量：{2} 请联系 Mygod 工作室™ 以解决此问题",
+                                     videoTypeCode, Type, Quality);
             }
         }
 

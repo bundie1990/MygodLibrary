@@ -94,6 +94,11 @@
                 return null;
             }
         }
+        public static void ExtractResource(string path, string target)
+        {
+            using (var stream = new FileStream(target, FileMode.Create, FileAccess.Write, FileShare.Read))
+                GetResourceStream(path).CopyTo(stream);
+        }
     }
 
     public class IconExtractor : IDisposable

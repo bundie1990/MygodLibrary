@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -10,7 +10,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Mygod</RootNamespace>
     <AssemblyName>MygodLibrary</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
@@ -24,6 +24,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -36,6 +37,7 @@
     <RegisterForComInterop>false</RegisterForComInterop>
     <DocumentationFile>bin\Release\MygodLibrary.XML</DocumentationFile>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
@@ -55,6 +57,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -66,6 +69,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />
@@ -116,8 +120,24 @@
     <Compile Include="Windows\Controls\DataGridAutoCompleteColumn.cs" />
     <Compile Include="Windows\Controls\DataGridEx.cs" />
     <Compile Include="Windows\Controls\DragCanvas.cs" />
+    <Compile Include="Windows\Controls\Primitives\ButtonChrome.cs" />
+    <Compile Include="Windows\Controls\Primitives\InputBase.cs" />
+    <Compile Include="Windows\Controls\Primitives\UpDownBase.cs" />
     <Compile Include="Windows\Controls\Reflection.cs" />
+    <Compile Include="Windows\Controls\Themes\ResourceKeys.cs" />
+    <Compile Include="Windows\Controls\Themes\StaticResourceKey.cs" />
     <Compile Include="Windows\Controls\WorldOfGooCursor.cs" />
+    <Compile Include="Windows\Controls\[WPFToolkit]\[Extended]\[ButtonSpinner]\ButtonSpinner.cs" />
+    <Compile Include="Windows\Controls\[WPFToolkit]\[Extended]\[ButtonSpinner]\SpinDirection.cs" />
+    <Compile Include="Windows\Controls\[WPFToolkit]\[Extended]\[ButtonSpinner]\SpinEventArgs.cs" />
+    <Compile Include="Windows\Controls\[WPFToolkit]\[Extended]\[ButtonSpinner]\Spinner.cs" />
+    <Compile Include="Windows\Controls\[WPFToolkit]\[Extended]\[ButtonSpinner]\ValidSpinDirections.cs" />
+    <Compile Include="Windows\Controls\[WPFToolkit]\[Extended]\[UpDown]\DecimalUpDown.cs" />
+    <Compile Include="Windows\Controls\[WPFToolkit]\[Extended]\[UpDown]\DoubleUpDown.cs" />
+    <Compile Include="Windows\Controls\[WPFToolkit]\[Extended]\[UpDown]\IntegerUpDown.cs" />
+    <Compile Include="Windows\Controls\[WPFToolkit]\[Extended]\[UpDown]\NumericUpDown.cs" />
+    <Compile Include="Windows\Controls\[WPFToolkit]\[Extended]\WatermarkTextBox.cs" />
+    <Compile Include="Windows\Converters.cs" />
     <Compile Include="Windows\CursorWindow.cs" />
     <Compile Include="Windows\Dialogs\Interop\ComDlgResources.cs" />
     <Compile Include="Windows\Dialogs\Interop\COMGuids.cs" />

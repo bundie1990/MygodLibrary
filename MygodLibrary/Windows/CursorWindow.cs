@@ -17,6 +17,7 @@ namespace Mygod.Windows
             WindowStyleProperty.OverrideMetadata(typeof(CursorWindow), new FrameworkPropertyMetadata(WindowStyle.None));
             ResizeModeProperty.OverrideMetadata(typeof(CursorWindow), new FrameworkPropertyMetadata(ResizeMode.NoResize));
             AllowsTransparencyProperty.OverrideMetadata(typeof(CursorWindow), new FrameworkPropertyMetadata(true));
+            ShowInTaskbarProperty.OverrideMetadata(typeof(CursorWindow), new FrameworkPropertyMetadata(false));
         }
 
         public CursorWindow()
@@ -35,10 +36,27 @@ namespace Mygod.Windows
         [DllImport("user32.dll", SetLastError = true)]
         private static extern bool BringWindowToTop(IntPtr hWnd);
 
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetWindow(IntPtr hWnd, uint uCmd);
+
+        [DllImport("user32.dll")]
+        private static extern int SetWindowPos(IntPtr hWnd, int hWndInsertAfter, int x, int y, int cx, int cy, uint uFlags);
+
         protected virtual void OnLoad(object sender, RoutedEventArgs e)
         {
-            handle = new WindowInteropHelper(this).Handle;
-            SetWindowLong(handle, -20, GetWindowLong(handle, -20) | 0x80000 | 0x20);
+            /************************************
+             * GWL_EXSTYLE          = -20       *
+             * WS_EX_TRANSPARENT    = 0x0000020 *
+             * WS_EX_LAYERED        = 0x0080000 *
+             * WS_EX_NOACTIVATE     = 0x8000000 * (prevent the window from showing in Alt+Tab)
+             * GW_OWNER             = 4         *
+             * SWP_NOMOVE           = 0x02      *
+             * SWP_NOSIZE           = 0x01      *
+             * SWP_NOACTIVATE       = 0x10      *
+             ************************************/
+            SetWindowLong(handle = new WindowInteropHelper(this).Handle, -20, GetWindowLong(handle, -20) | 0x8080020);
+            var owner = GetWindow(handle, 4);
+            if (owner != IntPtr.Zero) SetWindowPos(owner, -1, 0, 0, 0, 0, 0x13);    // show in taskbar fixes
             UpdateSize(sender, e);
             SystemEvents.DisplaySettingsChanged += UpdateSize;
         }
