@@ -1,4 +1,6 @@
-﻿namespace Mygod.Windows
+﻿using System.Windows.Controls;
+
+namespace Mygod.Windows
 {
     using System;
     using System.Runtime.InteropServices;
@@ -32,6 +34,15 @@
                     return false;
                 }
             }
+        }
+
+        public static readonly DependencyProperty DrawOnTitleBarProperty = DependencyProperty.Register("DrawOnTitleBar",
+            typeof(bool), typeof(GlassWindow), new PropertyMetadata(false));
+
+        public bool DrawOnTitleBar
+        {
+            get { return (bool)GetValue(DrawOnTitleBarProperty); }
+            set { SetValue(DrawOnTitleBarProperty, value); }
         }
 
         #endregion
@@ -80,15 +91,34 @@
 
         private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
-            if (msg == DwmMessages.WmDwmCompositionChanged || msg == DwmMessages.WmDwmNcRenderingChanged)
+            switch (msg)
             {
-                if (AeroGlassCompositionChanged != null)
-                {
-                    AeroGlassCompositionChanged.Invoke(this,
-                        new AeroGlassCompositionChangedEventArgs(AeroGlassCompositionEnabled));
-                }
-
-                handled = true;
+                case DwmMessages.WmDwmCompositionChanged:
+                case DwmMessages.WmDwmNcRenderingChanged:
+                    AeroGlassCompositionChanged.Invoke(this, new AeroGlassCompositionChangedEventArgs(AeroGlassCompositionEnabled));
+                    handled = true;
+                    break;
+                case DwmMessages.WmNcCalcSize:
+                    handled = DrawOnTitleBar;
+                    break;
+                case DwmMessages.WmNcHitTest:
+                    if (!(handled = DrawOnTitleBar)) break;
+                    var result = IntPtr.Zero;
+                    handled = DesktopWindowManagerNativeMethods.DwmDefWindowProc(hwnd, msg, wParam, lParam, ref result) != 0;
+                    if (handled) return result;
+                    if (WindowState == WindowState.Maximized) return new IntPtr(1); // no necessary to change the size when maximized
+                    var mouse = new Point(lParam.ToInt32() & 0xFFFF, lParam.ToInt32() >> 16);
+                    const int border = 6;
+                    double right = Left + ActualWidth, bottom = Top + ActualHeight;
+                    return new IntPtr(
+                        mouse.X - Left <= border
+                                ? mouse.Y - Top <= border ? 13 : bottom - mouse.Y <= border ? 16 : 10   // top bottom left
+                            : right - mouse.X <= border
+                                ? mouse.Y - Top <= border ? 14 : bottom - mouse.Y <= border ? 17 : 11   // top bottom right
+                                : mouse.Y - Top <= border ? 12 : bottom - mouse.Y <= border ? 15 : 1);  // top bottom normal
+                default:
+                    handled = false;
+                    break;
             }
             return IntPtr.Zero;
         }
@@ -138,8 +168,8 @@
                     ResetAeroGlass();
                     SetAeroGlassTransparency();
                     InvalidateVisual();
-                    if (Environment.OSVersion.Version.Major == 6 && Environment.OSVersion.Version.Minor <= 1)   // vista & 7
-                        Resources["GlowingEffect"] = new DropShadowEffect 
+                    if (Environment.OSVersion.Version.Major == 6 && Environment.OSVersion.Version.Minor <= 1) // vista & 7
+                        Resources["GlowingEffect"] = new DropShadowEffect
                             { Color = Colors.White, ShadowDepth = 0, RenderingBias = RenderingBias.Quality, BlurRadius = 8 };
                 }
                 else
@@ -179,6 +209,8 @@
     {
         internal const int WmDwmCompositionChanged = 0x031E;
         internal const int WmDwmNcRenderingChanged = 0x031F;
+        internal const int WmNcCalcSize = 0x0083;
+        internal const int WmNcHitTest = 0x0084;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -208,5 +240,8 @@
         [DllImport("DwmApi.dll", PreserveSig = false)]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool DwmIsCompositionEnabled();
+
+        [DllImport("dwmapi.dll")]
+        internal static extern int DwmDefWindowProc(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam, ref IntPtr plResult);
     }
 }

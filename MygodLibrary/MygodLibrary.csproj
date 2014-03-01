@@ -46,7 +46,7 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>MygodLibraryKey.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>Mygod.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -95,6 +95,7 @@
     <Compile Include="IO\IniFile.cs" />
     <Compile Include="Media\Buzzer.cs" />
     <Compile Include="Net\LinkConverter.cs" />
+    <Compile Include="Net\WebsiteManager.cs" />
     <Compile Include="Net\YouTube.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Runtime\Serialization\Plist\BinaryPlistArray.cs" />
@@ -111,6 +112,7 @@
     <Compile Include="Security\Cryptography\MD5Helper.cs" />
     <Compile Include="Text\Kmp.cs" />
     <Compile Include="Windows\Automation\Peers\AutoCompleteBoxAutomationPeer.cs" />
+    <Compile Include="Windows\ColorUtilities.cs" />
     <Compile Include="Windows\Controls\AlignableWrapPanel.cs" />
     <Compile Include="Windows\Controls\AnimatedExpander.cs" />
     <Compile Include="Windows\Controls\AnimatedProgressBar.cs" />
@@ -121,6 +123,9 @@
     <Compile Include="Windows\Controls\DataGridEx.cs" />
     <Compile Include="Windows\Controls\DragCanvas.cs" />
     <Compile Include="Windows\Controls\Primitives\ButtonChrome.cs" />
+    <Compile Include="Windows\Controls\[WPFToolkit]\[Extended]\[ColorCanvas]\ColorCanvas.cs" />
+    <Compile Include="Windows\Controls\[WPFToolkit]\[Extended]\[ColorCanvas]\ColorSpectrumSlider.cs" />
+    <Compile Include="Windows\HsvColor.cs" />
     <Compile Include="Windows\Controls\Primitives\InputBase.cs" />
     <Compile Include="Windows\Controls\Primitives\UpDownBase.cs" />
     <Compile Include="Windows\Controls\Reflection.cs" />
@@ -132,6 +137,8 @@
     <Compile Include="Windows\Controls\[WPFToolkit]\[Extended]\[ButtonSpinner]\SpinEventArgs.cs" />
     <Compile Include="Windows\Controls\[WPFToolkit]\[Extended]\[ButtonSpinner]\Spinner.cs" />
     <Compile Include="Windows\Controls\[WPFToolkit]\[Extended]\[ButtonSpinner]\ValidSpinDirections.cs" />
+    <Compile Include="Windows\Controls\[WPFToolkit]\[Extended]\[ColorPicker]\ColorItem.cs" />
+    <Compile Include="Windows\Controls\[WPFToolkit]\[Extended]\[ColorPicker]\ColorPicker.cs" />
     <Compile Include="Windows\Controls\[WPFToolkit]\[Extended]\[UpDown]\DecimalUpDown.cs" />
     <Compile Include="Windows\Controls\[WPFToolkit]\[Extended]\[UpDown]\DoubleUpDown.cs" />
     <Compile Include="Windows\Controls\[WPFToolkit]\[Extended]\[UpDown]\IntegerUpDown.cs" />
@@ -225,9 +232,6 @@
     <Compile Include="Xml\Linq\XHelper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="MygodLibraryKey.pfx" />
-  </ItemGroup>
-  <ItemGroup>
     <DesignData Include="DesignData\DesignerCommandLink.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -288,6 +292,10 @@
       <DependentUpon>ProgressDialog.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Mygod.pfx" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

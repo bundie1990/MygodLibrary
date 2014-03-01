@@ -18,7 +18,7 @@ namespace Mygod.Net
                 information = (from info in videoInfo.Split('&') let i = info.IndexOf('=') 
                                select new { Key = info.Substring(0, i), Value = info.Substring(i + 1) })
                     .ToDictionary(pair => pair.Key, pair => pair.Value);
-                if (videoInfo.Contains("status=fail"))
+                if (information["status"] != "ok")
                     throw new Exception("获取视频信息失败！原因：" + Uri.UnescapeDataString(information["reason"]).Replace('+', ' '));
                 FmtStreamMap = information["url_encoded_fmt_stream_map"].UrlDecode().Split(',')
                     .SelectMany(s => FmtStream.Create(s, this)).ToList();
@@ -153,8 +153,7 @@ namespace Mygod.Net
                 var dic = (from info in data.Split('&') let i = info.IndexOf('=')
                            select new { Key = info.Substring(0, i), Value = info.Substring(i + 1) })
                     .ToDictionary(pair => pair.Key, pair => pair.Value);
-                var result = Create(Convert.ToInt32(dic["itag"]), dic["url"].UrlDecode() + "&signature=" + dic["sig"], 
-                                    dic["fallback_host"], parent).ToList();
+                var result = Create(int.Parse(dic["itag"]), dic["url"].UrlDecode(), dic["fallback_host"], parent).ToList();
                 foreach (var u in result.OfType<UnknownFmtStream>())
                 {
                     u.Quality = dic["quality"];
@@ -356,11 +355,7 @@ namespace Mygod.Net
             public string GetUrl(string fileName = null)
             {
                 if (string.IsNullOrEmpty(fileName)) return url;
-                return url + "&title=" + fileName.Replace("\\", "＼").Replace("/", "／").Replace(":", "：").Replace("*", "＊")
-                    .Replace("?", "？").Replace("\"", "＂").Replace("<", "＜").Replace(">", "＞").Replace("|", "｜")
-                    .Replace("%", "％").Replace("#", "＃")
-                // convert ALL THOSE GODDAMN THINGS or it will definitely go wrong
-                    .UrlEncode().UrlEncode();
+                return url + "&title=" + fileName.UrlEncode().UrlEncode();
                 // double encode or non-ascii characters will go wrong in C# apps (HOLY SH*T THIS GODDAMN THING IS REALLY ANNOYING)
             }
 
@@ -575,6 +570,13 @@ namespace Mygod.Net
                 default:
                     return minChannels + "声道";
             }
+        }
+
+        public static string ToValidPath(this string path)
+        {
+            return path.Replace("\\", "＼").Replace("/", "／").Replace(":", "：").Replace("*", "＊").Replace("?", "？")
+                       .Replace("\"", "＂").Replace("<", "＜").Replace(">", "＞").Replace("|", "｜").Replace("%", "％")
+                       .Replace("#", "＃");      // convert ALL THOSE GODDAMN THINGS or it will definitely go wrong
         }
     }
 }
