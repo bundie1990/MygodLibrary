@@ -1,9 +1,8 @@
-﻿using System.ComponentModel;
-using System.Runtime.InteropServices;
-
-namespace Mygod
+﻿namespace Mygod
 {
     using System;
+    using System.ComponentModel;
+    using System.Runtime.InteropServices;
     using System.Windows.Threading;
     using System.Windows.Media;
     using System.Text;

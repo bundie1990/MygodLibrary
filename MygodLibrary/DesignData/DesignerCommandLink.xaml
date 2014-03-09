@@ -1,9 +1,0 @@
-﻿<dialogs:TaskDialogButtonData
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:m="http://schemas.mygodstudio.tk/wpf" xmlns:dialogs="clr-namespace:Mygod.Windows.Dialogs"
-
-	ID="0"
-	Text="Command _Link 1&#x0a;Line 2&#x0a;Line 3"
-	IsDefault="False"
-	IsCancel="False">
-</dialogs:TaskDialogButtonData>
