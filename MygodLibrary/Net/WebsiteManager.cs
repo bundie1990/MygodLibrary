@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Net;
+using Mygod.Windows;
 
 namespace Mygod.Net
 {
@@ -8,11 +9,11 @@ namespace Mygod.Net
     {
         private static readonly WebClient Client = new WebClient();
 
-        public static void CheckForUpdates(long id, Action noUpdates = null, Action<Exception> errorCallback = null)
+        public static void CheckForUpdates(Action noUpdates = null, Action<Exception> errorCallback = null)
         {
             try
             {
-                var url = Client.DownloadString("http://mygod.tk/product/update/" + id + '/');
+                var url = Client.DownloadString("http://mygod.tk/product/update/" + CurrentApp.Version.Revision + '/');
                 if (!string.IsNullOrWhiteSpace(url)) Process.Start(url);
                 else if (noUpdates != null) noUpdates();
             }

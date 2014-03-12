@@ -11,10 +11,10 @@ namespace Mygod.Net
     {
         public sealed class Video
         {
-            private Video(IWebProxy proxy, string id)
+            private Video(string id, IWebProxy proxy = null)
             {
-                var videoInfo = DownloadString(proxy,
-                    string.Format("http://www.youtube.com/get_video_info?video_id={0}&eurl=http://mygod.tk/", this.id = id));
+                var videoInfo = DownloadString(string.Format(
+                    "http://www.youtube.com/get_video_info?video_id={0}&eurl=http://mygod.tk/", this.id = id), proxy);
                 information = (from info in videoInfo.Split('&') let i = info.IndexOf('=') 
                                select new { Key = info.Substring(0, i), Value = info.Substring(i + 1) })
                     .ToDictionary(pair => pair.Key, pair => pair.Value);
@@ -29,7 +29,8 @@ namespace Mygod.Net
                 R0 = new Regex("data-video-id=(\"|')([A-Za-z0-9_\\-]{11})\\1", RegexOptions.Compiled),
                 R1 = new Regex("(\\?|&)v=([A-Za-z0-9_\\-]{11})", RegexOptions.Compiled),
                 R2 = new Regex("youtube(|.googleapis).com/(v|embed)/([A-Za-z0-9_\\-]{11})", RegexOptions.Compiled);
-            private static IEnumerable<Video> GetVideoFromContent(IWebProxy proxy, ISet<string> exception, string link)
+            private static IEnumerable<Video> GetVideoFromContent(ISet<string> exception, string link,
+                                                                  IWebProxy proxy = null)
             {
                 var match = R0.Match(link);
                 while (match.Success)
@@ -41,7 +42,7 @@ namespace Mygod.Net
                         if (!exception.Contains(id))
                         {
                             exception.Add(id);
-                            result = new Video(proxy, id);
+                            result = new Video(id, proxy);
                         }
                     }
                     catch { }
@@ -58,7 +59,7 @@ namespace Mygod.Net
                         if (!exception.Contains(id))
                         {
                             exception.Add(id);
-                            result = new Video(proxy, id);
+                            result = new Video(id, proxy);
                         }
                     }
                     catch { }
@@ -75,7 +76,7 @@ namespace Mygod.Net
                         if (!exception.Contains(id))
                         {
                             exception.Add(id);
-                            result = new Video(proxy, id);
+                            result = new Video(id, proxy);
                         }
                     }
                     catch { }
@@ -83,14 +84,14 @@ namespace Mygod.Net
                     match = match.NextMatch();
                 }
             }
-            public static IEnumerable<Video> GetVideoFromLink(IWebProxy proxy, string link)
+            public static IEnumerable<Video> GetVideoFromLink(string link, IWebProxy proxy = null)
             {
                 var result = new HashSet<string>();
-                foreach (var video in GetVideoFromContent(proxy, result, link)) yield return video;
-                foreach (var video in GetVideoFromContent(proxy, result, DownloadString(proxy, link)))
+                foreach (var video in GetVideoFromContent(result, link, proxy)) yield return video;
+                foreach (var video in GetVideoFromContent(result, DownloadString(link, proxy), proxy))
                     yield return video;
             }
-            private static string DownloadString(IWebProxy proxy, string address)
+            private static string DownloadString(string address, IWebProxy proxy = null)
             {
                 using (var client = new WebClient { Proxy = proxy }) return client.DownloadString(address);
             }

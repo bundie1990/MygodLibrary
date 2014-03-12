@@ -18,7 +18,7 @@
     {
         private static AssemblyName NowAssemblyName { get { return Assembly.GetEntryAssembly().GetName(); } }
         public static string Name { get { return NowAssemblyName.Name; } }
-        public static string Version { get { return NowAssemblyName.Version.ToString(); } }
+        public static Version Version { get { return NowAssemblyName.Version; } }
         public static string Title { get { return Name + " V" + Version; } }
         public static string Path { get { return Assembly.GetEntryAssembly().Location; } }
         public static string Directory { get { return AppDomain.CurrentDomain.BaseDirectory; }}

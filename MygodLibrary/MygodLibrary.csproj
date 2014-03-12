@@ -124,7 +124,9 @@
     <Compile Include="Windows\Controls\[WPFToolkit]\[Extended]\[ColorCanvas]\ColorSpectrumSlider.cs" />
     <Compile Include="Windows\Dialogs\[ProgressDialog]\AnimationResource.cs" />
     <Compile Include="Windows\Dialogs\[ProgressDialog]\ProgressBarStyle.cs" />
-    <Compile Include="Windows\Dialogs\[ProgressDialog]\ProgressDialog.cs" />
+    <Compile Include="Windows\Dialogs\[ProgressDialog]\ProgressDialog.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Windows\Dialogs\[ProgressDialog]\ProgressDialog.designer.cs">
       <DependentUpon>ProgressDialog.cs</DependentUpon>
     </Compile>
