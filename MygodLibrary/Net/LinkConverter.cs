@@ -6,14 +6,14 @@ namespace Mygod.Net
 {
     public static class LinkConverter
     {
-        public static string Base64Encode(string str)
+        public static string Base64Encode(string str, Encoding encoding = null)
         {
-            return Convert.ToBase64String(Encoding.Default.GetBytes(str));
+            return Convert.ToBase64String((encoding ?? Encoding.Default).GetBytes(str));
         }
 
-        public static string Base64Decode(string str)
+        public static string Base64Decode(string str, Encoding encoding = null)
         {
-            return Encoding.Default.GetString(Convert.FromBase64String(str));
+            return (encoding ?? Encoding.Default).GetString(Convert.FromBase64String(str));
         }
 
         public static string PublicEncode(string link, string linkpre, string prefix, string suffix, string name)

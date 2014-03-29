@@ -105,10 +105,17 @@
         {
         }
 
+        public static string ToValidPath(this string path)
+        {
+            return path.Replace("\\", "＼").Replace("/", "／").Replace(":", "：").Replace("*", "＊").Replace("?", "？")
+                       .Replace("\"", "＂").Replace("<", "＜").Replace(">", "＞").Replace("|", "｜").Replace("%", "％")
+                       .Replace("#", "＃");      // convert ALL THOSE GODDAMN THINGS or it will definitely go wrong
+        }
+
         public static string UrlDecode(this string str)
         {
             if (str == null) return null;
-            return Uri.UnescapeDataString(str);
+            return Uri.UnescapeDataString(str.Replace('+', ' '));
         }
 
         public static string UrlEncode(this string str)
