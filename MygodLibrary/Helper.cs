@@ -105,10 +105,11 @@
         {
         }
 
-        public static string ToValidPath(this string path)
+        public static string ToValidPath(this string path, bool slashes = true)
         {
-            return path.Replace("\\", "＼").Replace("/", "／").Replace(":", "：").Replace("*", "＊").Replace("?", "？")
-                       .Replace("\"", "＂").Replace("<", "＜").Replace(">", "＞").Replace("|", "｜").Replace("%", "％")
+            if (slashes) path = path.Replace("\\", "＼").Replace("/", "／");
+            return path.Replace(":", "：").Replace("*", "＊").Replace("?", "？").Replace("\"", "＂")
+                       .Replace("<", "＜").Replace(">", "＞").Replace("|", "｜").Replace("%", "％")
                        .Replace("#", "＃");      // convert ALL THOSE GODDAMN THINGS or it will definitely go wrong
         }
 
