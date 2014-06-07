@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
+using Mygod.Xml.Linq;
 
 namespace Mygod.Net
 {
@@ -20,8 +23,9 @@ namespace Mygod.Net
                     .ToDictionary(pair => pair.Key, pair => pair.Value);
                 if (information["status"] != "ok")
                     throw new Exception("获取视频信息失败！原因：" + information["reason"]);
-                FmtStreamMap = information["url_encoded_fmt_stream_map"].Split(',')
-                    .SelectMany(s => FmtStream.Create(s, this)).ToList();
+                Downloads = information["url_encoded_fmt_stream_map"].Split(',')
+                    .SelectMany(s => FmtStream.Create(s, this).Cast<Downloadable>())
+                    .Concat(Subtitle.Create(information["ttsurl"], this)).ToList();
                 information.Remove("url_encoded_fmt_stream_map");
             }
 
@@ -91,7 +95,7 @@ namespace Mygod.Net
                 foreach (var video in GetVideoFromContent(result, DownloadString(link, proxy), proxy))
                     yield return video;
             }
-            private static string DownloadString(string address, IWebProxy proxy = null)
+            public static string DownloadString(string address, IWebProxy proxy = null)
             {
                 using (var client = new WebClient())
                 {
@@ -99,10 +103,18 @@ namespace Mygod.Net
                     return client.DownloadString(address);
                 }
             }
+            public static byte[] DownloadData(string address, IWebProxy proxy = null)
+            {
+                using (var client = new WebClient())
+                {
+                    if (proxy != null) client.Proxy = proxy;
+                    return client.DownloadData(address);
+                }
+            }
 
             private readonly string id;
             private readonly Dictionary<string, string> information;
-            public readonly List<FmtStream> FmtStreamMap;
+            public readonly List<Downloadable> Downloads;
 
             public string Title { get { return information["title"]; } }
             public string Author { get { return information["author"]; } }
@@ -146,18 +158,32 @@ namespace Mygod.Net
             }
         }
 
-        public class FmtStream : IComparable<FmtStream>
+        public abstract class Downloadable : IComparable<Downloadable>
         {
-            protected FmtStream(Video parent, string url)
+            protected Downloadable(Video parent)
             {
                 this.parent = parent;
+            }
+
+            private readonly Video parent;
+            public Video Parent { get { return parent; } }
+            public abstract string Properties { get; }
+            public abstract int CompareTo(Downloadable other);
+            public abstract string GetUrl(string fileName = null);
+            public abstract string Extension { get; }
+        }
+
+        public class FmtStream : Downloadable
+        {
+            protected FmtStream(Video parent, string url) : base(parent)
+            {
                 this.url = url;
             }
 
             private FmtStream(VideoFormat videoFormat, VideoEncodings videoEncoding, int videoHeight,
-                              double? videoMinBitrate, double? videoMaxBitrate, AudioEncodings audioEncoding, int audioMinChannels,
-                              int audioMaxChannels, int audioSamplingRate, int? audioBitrate, string url, Video parent)
-                : this(parent, url)
+                              double? videoMinBitrate, double? videoMaxBitrate, AudioEncodings audioEncoding,
+                              int audioMinChannels, int audioMaxChannels, int audioSamplingRate, int? audioBitrate,
+                              string url, Video parent) : this(parent, url)
             {
                 Format = videoFormat;
                 VideoEncoding = videoEncoding;
@@ -391,8 +417,7 @@ namespace Mygod.Net
             public readonly int? AudioBitrate;
             // ReSharper restore MemberCanBePrivate.Global
 
-            private readonly Video parent;
-            public string Properties
+            public override string Properties
             {
                 get
                 {
@@ -405,22 +430,20 @@ namespace Mygod.Net
                                                             SamplingRate, AudioBitrate, Environment.NewLine), url, Environment.NewLine);
                 }
             }
-
-            public Video Parent { get { return parent; } }
-            public string Extension { get { return GetVideoFormatExtension(Format); } }
+            public override string Extension { get { return GetVideoFormatExtension(Format); } }
 
             private readonly string url = "about:blank;";
-
-            public string GetUrl(string fileName = null)
+            public override string GetUrl(string fileName = null)
             {
                 if (string.IsNullOrEmpty(fileName)) return url;
                 return url + "&title=" + fileName.ToValidPath().UrlEncode().UrlEncode();
                 // double encode or non-ascii characters will go wrong in C# apps (HOLY SH*T THIS GODDAMN THING IS REALLY ANNOYING)
             }
 
-            public int CompareTo(FmtStream other)
+            public override int CompareTo(Downloadable o)
             {
-                if (other == null) throw new NotSupportedException();
+                var other = o as FmtStream;
+                if (other == null) return -1;
                 if (this is UnknownFmtStream) if (other is UnknownFmtStream) return 0; else return -1;
                 if (other is UnknownFmtStream) return 1;
                 if (MaxVideoHeight > other.MaxVideoHeight) return 1;
@@ -433,7 +456,8 @@ namespace Mygod.Net
                 if (SamplingRate < other.SamplingRate) return -1;
                 if (AudioBitrate > other.AudioBitrate) return 1;
                 if (AudioBitrate < other.AudioBitrate) return -1;
-                if (Format != VideoFormat.FormatWebM && other.Format == VideoFormat.FormatWebM) return 1; // 尽量不使用webm因为兼容性不好
+                if (Format != VideoFormat.FormatWebM && other.Format == VideoFormat.FormatWebM) return 1;
+                // 尽量不使用 webm 因为兼容性不好
                 return 0;
             }
 
@@ -476,7 +500,6 @@ namespace Mygod.Net
 
             // ReSharper restore MemberCanBePrivate.Global
         }
-
         private sealed class UnknownFmtStream : FmtStream
         {
             public UnknownFmtStream(int code, string url, Video parent) : base(parent, url)
@@ -491,6 +514,77 @@ namespace Mygod.Net
             {
                 return string.Format("未知的 FMT #{0} 类型：{1} 质量：{2} 请联系 Mygod 工作室™ 以解决此问题",
                                      videoTypeCode, Type, Quality);
+            }
+        }
+
+        public class Subtitle : Downloadable
+        {
+            private Subtitle(long id, string name, string lang, string code, string vss, string extension,
+                             string url, Video parent) : base(parent)
+            {
+                this.id = id;
+                Name = name;
+                Language = lang;
+                langCode = code;
+                vssID = vss;
+                this.extension = extension;
+                this.url = url;
+            }
+
+            private static readonly Regex LanguageReplacer = new Regex(@"(?<=hl\=)[^&]*", RegexOptions.Compiled);
+            public static IEnumerable<Subtitle> Create(string ttsurl, Video parent)
+            {
+                var root = XDocument.Parse(Encoding.UTF8.GetString(Video.DownloadData(
+                    (ttsurl = LanguageReplacer.Replace(ttsurl, "zh-CN")) + 
+                    "&type=list&tlangs=1&fmts=1&vssids=1&asrs=1"))).Root;
+                var extensions =
+                    root.ElementsCaseInsensitive("format").Select(e => e.GetAttributeValue("fmt_code")).ToList();
+                foreach (var e in root.ElementsCaseInsensitive("track"))
+                {
+                    var id = e.GetAttributeValue<long>("id");
+                    string name = e.GetAttributeValue("name"), lang = e.GetAttributeValue("lang_translated"),
+                           code = e.GetAttributeValue("lang_code"), vss = e.GetAttributeValue("vss_id");
+                    foreach (var extension in extensions)
+                        yield return new Subtitle(id, name, lang, code, vss, extension, ttsurl, parent);
+                }
+            }
+
+            private readonly long id;
+            private readonly string langCode, vssID, extension, url;
+
+            public string Name { get; private set; }
+            public string Language { get; private set; }
+            public override string Properties
+            {
+                get { return string.Format("{0}{1}下载地址：{2}", this, Environment.NewLine, GetUrl()); }
+            }
+            public override string Extension
+            {
+                get
+                {
+                    var result = vssID;
+                    if (!result.StartsWith(".", StringComparison.InvariantCulture)) result = '.' + result;
+                    if (!string.IsNullOrWhiteSpace(Name)) result += '.' + Name;
+                    return result + '.' + extension;
+                }
+            }
+
+            public override int CompareTo(Downloadable other)
+            {
+                var subtitle = other as Subtitle;
+                return subtitle == null ? 1 : id < subtitle.id ? -1 : id > subtitle.id ? 1 :
+                    string.Compare(extension, subtitle.extension, StringComparison.OrdinalIgnoreCase);
+            }
+
+            public override string GetUrl(string fileName = null)
+            {
+                return string.Format("{0}&type=track&lang={1}&name={2}&kind&fmt={3}", url, langCode, Name, extension);
+            }
+
+            public override string ToString()
+            {
+                return string.Format("{0}字幕{2} ({1} 格式)", Language, extension,
+                                     string.IsNullOrWhiteSpace(Name) ? string.Empty : " (" + Name + ')');
             }
         }
 
