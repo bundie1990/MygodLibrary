@@ -23,9 +23,11 @@ namespace Mygod.Net
                     .ToDictionary(pair => pair.Key, pair => pair.Value);
                 if (information["status"] != "ok")
                     throw new Exception("获取视频信息失败！原因：" + information["reason"]);
-                Downloads = information["url_encoded_fmt_stream_map"].Split(',')
-                    .SelectMany(s => FmtStream.Create(s, this).Cast<Downloadable>())
-                    .Concat(Subtitle.Create(information["ttsurl"], this)).ToList();
+                var downloads = information["url_encoded_fmt_stream_map"].Split(',')
+                                    .SelectMany(s => FmtStream.Create(s, this).Cast<Downloadable>());
+                if (information.ContainsKey("ttsurl"))
+                    downloads = downloads.Concat(Subtitle.Create(information["ttsurl"], this, proxy));
+                Downloads = downloads.ToList();
                 information.Remove("url_encoded_fmt_stream_map");
             }
 
@@ -532,11 +534,11 @@ namespace Mygod.Net
             }
 
             private static readonly Regex LanguageReplacer = new Regex(@"(?<=hl\=)[^&]*", RegexOptions.Compiled);
-            public static IEnumerable<Subtitle> Create(string ttsurl, Video parent)
+            public static IEnumerable<Subtitle> Create(string ttsurl, Video parent, IWebProxy proxy = null)
             {
                 var root = XDocument.Parse(Encoding.UTF8.GetString(Video.DownloadData(
-                    (ttsurl = LanguageReplacer.Replace(ttsurl, "zh-CN")) + 
-                    "&type=list&tlangs=1&fmts=1&vssids=1&asrs=1"))).Root;
+                    (ttsurl = LanguageReplacer.Replace(ttsurl, "zh-CN")) +
+                    "&type=list&tlangs=1&fmts=1&vssids=1&asrs=1", proxy))).Root;
                 var extensions =
                     root.ElementsCaseInsensitive("format").Select(e => e.GetAttributeValue("fmt_code")).ToList();
                 foreach (var e in root.ElementsCaseInsensitive("track"))
