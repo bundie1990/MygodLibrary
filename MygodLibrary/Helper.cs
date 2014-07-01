@@ -1,4 +1,6 @@
-﻿namespace Mygod
+﻿using System.Linq;
+
+namespace Mygod
 {
     using System;
     using System.ComponentModel;
@@ -129,6 +131,12 @@
         {
             var error = Marshal.GetLastWin32Error();
             if (error != 0) throw new Win32Exception(error);
+        }
+
+        public static string Substr(this string str, int from, int to = -1)
+        {
+            return from <= to ? str.Substring(from, to - from)
+                              : str.Substring(to + 1, from - to).Reverse().Aggregate(string.Empty, (s, c) => s + c);
         }
     }
 }
