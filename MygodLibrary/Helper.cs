@@ -1,10 +1,11 @@
-﻿using System.Linq;
-
-namespace Mygod
+﻿namespace Mygod
 {
     using System;
     using System.ComponentModel;
+    using System.Linq;
     using System.Runtime.InteropServices;
+    using System.Windows;
+    using System.Windows.Interop;
     using System.Windows.Threading;
     using System.Windows.Media;
     using System.Text;
@@ -137,6 +138,39 @@ namespace Mygod
         {
             return from <= to ? str.Substring(from, to - from)
                               : str.Substring(to + 1, from - to).Reverse().Aggregate(string.Empty, (s, c) => s + c);
+        }
+
+        private static readonly string[]
+            Units = { null, "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB", "BB", "NB", "DB", "CB" };
+
+        public static string GetSize(long size, string bytes = "Bytes")
+        {
+            double n = size;
+            byte i = 0;
+            while (n > 1000)
+            {
+                n /= 1024;
+                i++;
+            }
+            return i == 0 ? size.ToString("N0") + ' ' + bytes
+                          : n.ToString("N") + ' ' + Units[i] + " (" + size.ToString("N0") + ' ' + bytes + ')';
+        }
+
+        public static string GetSize(double size, string bytes = "Bytes")
+        {
+            var n = size;
+            byte i = 0;
+            while (n > 1000)
+            {
+                n /= 1024;
+                i++;
+            }
+            return n.ToString("N") + ' ' + (i == 0 ? bytes : Units[i] + " (" + size.ToString("N") + ' ' + bytes + ')');
+        }
+
+        public static IntPtr GetHwnd(this Window window)
+        {
+            return window == null ? IntPtr.Zero : new WindowInteropHelper(window).Handle;
         }
     }
 }

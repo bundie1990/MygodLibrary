@@ -77,10 +77,10 @@ namespace Mygod.Xml.Linq
             if (type.IsSubclassOf(typeof(Enum))) return element.GetAttributeValueEnum<T>(name);
             if (type == typeof(string)) return (T)(object)element.GetAttributeValue(name);
             if (IsNullable(type)) return GetAttributeValueWithDefault(element, name, (T)(object)null);
-            var parse = type.GetMethod("Parse", BindingFlags.Public | BindingFlags.Static, null, new[] { typeof(string) }, null);
-            if (parse == null || parse.ReturnType != type)
-                throw new NotSupportedException(
-                    "You must define a public static T Parse(string) method before using GetAttributeValueWithDefault<T>!");
+            var parse = type.GetMethod("Parse", BindingFlags.Public | BindingFlags.Static, null,
+                                       new[] { typeof(string) }, null);
+            if (parse == null || parse.ReturnType != type) throw new NotSupportedException(
+                "You must define a public static T Parse(string) method before using GetAttributeValueWithDefault<T>!");
             return (T)parse.Invoke(null, new object[] { element.GetAttributeValue(name) });
         }
 
@@ -107,20 +107,24 @@ namespace Mygod.Xml.Linq
             var str = element.GetAttributeValue(name);
             if (string.IsNullOrWhiteSpace(str)) return defaultValue;
             while (IsNullable(type)) type = type.GetGenericArguments()[0];
-            var parse = type.GetMethod("Parse", BindingFlags.Public | BindingFlags.Static, null, new[] { typeof(string) }, null);
+            var parse = type.GetMethod("Parse", BindingFlags.Public | BindingFlags.Static, null,
+                                       new[] { typeof(string) }, null);
             if (type == typeof(string)) return (T)(object)str;
             if (parse == null || parse.ReturnType != type) throw new NotSupportedException(
                 "You must define a public static T Parse(string) method before using GetAttributeValueWithDefault<T>!");
             return (T) parse.Invoke(null, new object[] { str });
         }
 
-        public static void GetAttributeValueWithDefault<T>(this XElement element, out T result, XName name, T defaultValue = default(T))
+        public static void GetAttributeValueWithDefault<T>(this XElement element, out T result, XName name,
+                                                           T defaultValue = default(T))
         {
-            if (typeof(T).IsSubclassOf(typeof(Enum))) element.GetAttributeValueEnumWithDefault(out result, name, defaultValue);
+            if (typeof(T).IsSubclassOf(typeof(Enum)))
+                element.GetAttributeValueEnumWithDefault(out result, name, defaultValue);
             else result = element.GetAttributeValueWithDefault(name, defaultValue);
         }
 
-        private static T GetAttributeValueEnumWithDefault<T>(this XElement element, XName name, T defaultValue = default(T))
+        private static T GetAttributeValueEnumWithDefault<T>(this XElement element, XName name,
+                                                             T defaultValue = default(T))
         {
             var str = element.GetAttributeValue(name);
             return string.IsNullOrWhiteSpace(str) ? defaultValue : (T)Enum.Parse(typeof(T), str, true);
@@ -133,7 +137,8 @@ namespace Mygod.Xml.Linq
             result = string.IsNullOrWhiteSpace(str) ? defaultValue : (T)Enum.Parse(typeof(T), str, true);
         }
 
-        public static void SetAttributeValueWithDefault<T>(this XElement element, XName name, T value, T defaultValue = default(T))
+        public static void SetAttributeValueWithDefault<T>(this XElement element, XName name, T value,
+                                                           T defaultValue = default(T))
         {
             if (!ReferenceEquals(value, defaultValue) && !ReferenceEquals(value, null) && !value.Equals(defaultValue))
                 element.SetAttributeValue(name, value.ToString());

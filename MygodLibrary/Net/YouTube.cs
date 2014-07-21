@@ -478,6 +478,11 @@ namespace Mygod.Net
                             yield return new FmtStream(VideoFormat.FormatMP4, VideoEncodings.H264High, 1440,
                                                        4, 5, AudioEncodings.None, 0, 0, 0, null, u, parent);
                         yield break;
+                    case 271:   // TODO: 2 unknown
+                        foreach (var u in urls)
+                            yield return new FmtStream(VideoFormat.FormatWebM, VideoEncodings.VP9, 1440,
+                                                       null, null, AudioEncodings.None, 0, 0, 0, null, u, parent);
+                        yield break;
                     default:
                         foreach (var u in urls) yield return new UnknownFmtStream(itag, u, fallbackType, parent);
                         yield break;
@@ -592,7 +597,8 @@ namespace Mygod.Net
             {
                 if (VideoMinBitrate == null || VideoMaxBitrate == null) return null;
                 return Math.Abs(VideoMinBitrate.Value - VideoMaxBitrate.Value) < 1e-4
-                    ? VideoMaxBitrate.Value.ToString(CultureInfo.InvariantCulture) : (VideoMinBitrate + "-" + VideoMaxBitrate);
+                    ? VideoMaxBitrate.Value.ToString(CultureInfo.InvariantCulture)
+                    : (VideoMinBitrate + "-" + VideoMaxBitrate);
             }
 
             // ReSharper restore MemberCanBePrivate.Global

@@ -1,10 +1,8 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices;
 using System.Text;
-using Mygod.Windows.Dialogs.Interop;
 
 namespace Mygod.Windows.Dialogs
 {
@@ -30,7 +28,6 @@ namespace Mygod.Windows.Dialogs
 		internal static extern IntPtr SendMessage(IntPtr hwnd, uint msg, IntPtr wParam, IntPtr lParam);
 		[DllImport("user32.dll")]
         internal static extern IntPtr DefWindowProc(IntPtr hwnd, uint msg, IntPtr wParam, IntPtr lParam);
-        public const int ErrorFileNotFound = 2;
 
         public static bool IsWindowsVistaOrLater { get { return Environment.OSVersion.Platform == PlatformID.Win32NT && Environment.OSVersion.Version >= new Version(6, 0, 6000); } }
 
@@ -56,29 +53,6 @@ namespace Mygod.Windows.Dialogs
             LoadWithAlteredSearchPath = 0x00000008,
             LoadIgnoreCodeAuthzLevel = 0x00000010
         }
-
-        #endregion
-
-        #region String Resources
-
-        [Flags]
-        public enum FormatMessageFlags
-        {
-            FORMAT_MESSAGE_ALLOCATE_BUFFER = 0x00000100,
-            FORMAT_MESSAGE_IGNORE_INSERTS = 0x00000200,
-            FORMAT_MESSAGE_FROM_STRING = 0x00000400,
-            FORMAT_MESSAGE_FROM_HMODULE = 0x00000800,
-            FORMAT_MESSAGE_FROM_SYSTEM = 0x00001000,
-            FORMAT_MESSAGE_ARGUMENT_ARRAY = 0x00002000
-        }
-
-        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto, BestFitMapping = false, ThrowOnUnmappableChar = true)]
-        public static extern int LoadString(SafeModuleHandle hInstance, uint uID, StringBuilder lpBuffer, int nBufferMax);
-
-        [DllImport("Kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        public static extern uint FormatMessage([MarshalAs(UnmanagedType.U4)] FormatMessageFlags dwFlags, IntPtr lpSource,
-                                                uint dwMessageId, uint dwLanguageId, ref IntPtr lpBuffer,
-                                                uint nSize, string[] arguments);
 
         #endregion
 

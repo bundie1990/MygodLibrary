@@ -121,15 +121,6 @@
     <Compile Include="Windows\Controls\Primitives\ButtonChrome.cs" />
     <Compile Include="Windows\Controls\[WPFToolkit]\[Extended]\[ColorCanvas]\ColorCanvas.cs" />
     <Compile Include="Windows\Controls\[WPFToolkit]\[Extended]\[ColorCanvas]\ColorSpectrumSlider.cs" />
-    <Compile Include="Windows\Dialogs\[ProgressDialog]\AnimationResource.cs" />
-    <Compile Include="Windows\Dialogs\[ProgressDialog]\ProgressBarStyle.cs" />
-    <Compile Include="Windows\Dialogs\[ProgressDialog]\ProgressDialog.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Windows\Dialogs\[ProgressDialog]\ProgressDialog.designer.cs">
-      <DependentUpon>ProgressDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\Dialogs\[ProgressDialog]\ShellAnimation.cs" />
     <Compile Include="Windows\HsvColor.cs" />
     <Compile Include="Windows\Controls\Primitives\InputBase.cs" />
     <Compile Include="Windows\Controls\Primitives\UpDownBase.cs" />
@@ -151,11 +142,8 @@
     <Compile Include="Windows\Controls\[WPFToolkit]\[Extended]\WatermarkTextBox.cs" />
     <Compile Include="Windows\Converters.cs" />
     <Compile Include="Windows\CursorWindow.cs" />
-    <Compile Include="Windows\Dialogs\[ProgressDialog]\Interop\COMGuids.cs" />
-    <Compile Include="Windows\Dialogs\[ProgressDialog]\Interop\IProgressDialog.cs" />
     <Compile Include="Windows\Dialogs\SafeHandles.cs" />
     <Compile Include="Windows\Dialogs\NativeMethods.cs" />
-    <Compile Include="Windows\Dialogs\SafeNativeMethods.cs" />
     <Compile Include="Windows\Controls\[WPFToolkit]\BindingEvaluator.cs" />
     <Compile Include="Windows\Controls\[WPFToolkit]\InteractionHelper.cs" />
     <Compile Include="Windows\Controls\[WPFToolkit]\IUpdateVisualState.cs" />
@@ -248,11 +236,6 @@
     <None Include="Mygod.pfx" />
   </ItemGroup>
   <ItemGroup />
-  <ItemGroup>
-    <EmbeddedResource Include="Windows\Dialogs\[ProgressDialog]\ProgressDialog.resx">
-      <DependentUpon>ProgressDialog.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
