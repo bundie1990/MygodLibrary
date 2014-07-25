@@ -114,19 +114,6 @@ namespace Mygod.Windows.Controls
 
         #endregion //Minimum
 
-        #region SelectAllOnGotFocus
-
-        public static readonly DependencyProperty SelectAllOnGotFocusProperty = DependencyProperty.Register("SelectAllOnGotFocus",
-            typeof(bool), typeof(NumericUpDown<T>), new PropertyMetadata(false));
-
-        public bool SelectAllOnGotFocus
-        {
-            get { return (bool) GetValue(SelectAllOnGotFocusProperty); }
-            set { SetValue(SelectAllOnGotFocusProperty, value); }
-        }
-
-        #endregion //SelectAllOnGotFocus
-
         #endregion //Properties
 
         #region Methods

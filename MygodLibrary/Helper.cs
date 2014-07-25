@@ -2,6 +2,7 @@
 {
     using System;
     using System.ComponentModel;
+    using System.IO;
     using System.Linq;
     using System.Runtime.InteropServices;
     using System.Windows;
@@ -171,6 +172,12 @@
         public static IntPtr GetHwnd(this Window window)
         {
             return window == null ? IntPtr.Zero : new WindowInteropHelper(window).Handle;
+        }
+
+        public static int ReadCharExtended(this BinaryReader reader, long length)
+        {
+            var stream = reader.BaseStream;
+            return stream.Position == length ? -1 : reader.ReadChar();
         }
     }
 }

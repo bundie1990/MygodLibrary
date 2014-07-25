@@ -276,6 +276,11 @@ namespace Mygod.Windows.Controls.Primitives
 
     #region Methods
 
+    public void SelectAll()
+    {
+      TextBox.SelectAll();
+    }
+
     protected virtual void OnSpin( SpinEventArgs e )
     {
       if( e == null )
