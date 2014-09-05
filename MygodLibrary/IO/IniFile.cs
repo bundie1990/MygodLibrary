@@ -1,8 +1,7 @@
-﻿using System.Collections;
-
-namespace Mygod.IO
+﻿namespace Mygod.IO
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Globalization;
     using System.IO;
@@ -462,7 +461,8 @@ namespace Mygod.IO
 
     public class StringDictionaryData : IniSection, IIniDataWithParam<string, string>
     {
-        public StringDictionaryData(IniFile iniFile, string sectionName, string defaultValue = null) : base(iniFile, sectionName)
+        public StringDictionaryData(IniFile iniFile, string sectionName, string defaultValue = null)
+            : base(iniFile, sectionName)
         {
             Value = defaultValue;
         }
@@ -477,7 +477,7 @@ namespace Mygod.IO
         }
         public void Set(string key, string data)
         {
-            if (dictionary.ContainsKey(key)) dictionary.Add(key, new StringData(this, key, Value));
+            if (!dictionary.ContainsKey(key)) dictionary.Add(key, new StringData(this, key, Value));
             dictionary[key].Set(data);
         }
 

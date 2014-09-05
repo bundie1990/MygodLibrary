@@ -15,8 +15,8 @@ namespace Mygod.Net
         {
             private Video(string id, IWebProxy proxy = null)
             {
-                var videoInfo = DownloadString("http://www.youtube.com/get_video_info?eurl=http://mygod.tk/&video_id=" +
-                                                    (this.id = id), proxy);
+                var videoInfo = DownloadString(
+                    "http://www.youtube.com/get_video_info?eurl=http://mygod.tk/&video_id=" + (this.id = id), proxy);
                 information = (from info in videoInfo.Split('&') let i = info.IndexOf('=') 
                                select new { Key = info.Substring(0, i), Value = info.Substring(i + 1).UrlDecode() })
                     .ToDictionary(pair => pair.Key, pair => pair.Value);
@@ -174,20 +174,24 @@ namespace Mygod.Net
 
             private readonly Video parent;
             public Video Parent { get { return parent; } }
-            public abstract string Properties { get; }
+            public Exception UrlUnavailableException { get; protected set; }
+            public virtual string Properties { get { return ToString(); } }
             public abstract string GetUrl(string fileName = null);
             public abstract string Extension { get; }
         }
 
         public class FmtStream : Downloadable
         {
-            private FmtStream(int itag, string url, string type, string size, long bitrate, Video parent) : base(parent)
+            private FmtStream(int itag, string url, string type, string size, long bitrate, bool stereo3D,
+                              Exception exc, Video parent) : base(parent)
             {
                 ITag = itag;
                 this.url = url;
                 Type = type;
                 Size = size;
                 Bitrate = bitrate;
+                Stereo3D = stereo3D;
+                UrlUnavailableException = exc;
             }
 
             public static IEnumerable<FmtStream> Create(string data, Video parent,
@@ -197,8 +201,6 @@ namespace Mygod.Net
                            select new { Key = info.Substring(0, i), Value = info.Substring(i + 1) })
                     .ToDictionary(pair => pair.Key, pair => pair.Value);
                 string signature = dic.ContainsKey("sig") ? dic["sig"] : null, url = dic["url"].UrlDecode();
-                if (dic.ContainsKey("s"))
-                    throw new NotSupportedException("Signature ciphered, copyright protected.");
                 if (!string.IsNullOrWhiteSpace(signature)) url += "&signature=" + signature;
                 var fallbackHost = dic.ContainsKey("fallback_host") ? dic["fallback_host"] : null;
                 var fmt = dic["itag"];
@@ -213,22 +215,19 @@ namespace Mygod.Net
                 return urls.Select(u => new FmtStream(int.Parse(fmt), u, dic["type"].UrlDecode(),
                     resolutionLookup.ContainsKey(fmt) ? resolutionLookup[fmt]
                                                       : dic.ContainsKey("size") ? dic["size"] : null,
-                    dic.ContainsKey("bitrate") ? long.Parse(dic["bitrate"]) : 0, parent));
+                    dic.ContainsKey("bitrate") ? long.Parse(dic["bitrate"]) : 0,
+                    dic.ContainsKey("stereo3d") && dic["stereo3d"] == "1",
+                    dic.ContainsKey("s") ? new NotSupportedException("签名已加密，版权受保护。") : null, parent));
             }
 
             // ReSharper disable MemberCanBePrivate.Global
             public readonly int ITag;
             public readonly string Type, Size;
             public readonly long Bitrate;
+            public readonly bool Stereo3D;
             // ReSharper restore MemberCanBePrivate.Global
 
-            public override string Properties
-            {
-                get
-                {
-                    return string.Format("#{2} {0}{1}下载地址：{3}", this, Environment.NewLine, ITag, GetUrl());
-                }
-            }
+            public override string Properties { get { return "#" + ITag + ' ' + base.Properties; } }
 
             public override string Extension
             {
@@ -256,8 +255,9 @@ namespace Mygod.Net
 
             public override string ToString()
             {
-                return Type + (Size == null ? string.Empty : "; " + Size) +
-                              (Bitrate == 0 ? string.Empty : "; " + Helper.GetSize(Bitrate, "字节") + " 每秒");
+                return Type + (Size == null ? string.Empty : "; " + Size) + (Stereo3D ? "; 3D" : string.Empty) +
+                       (Bitrate == 0 ? string.Empty : "; " + Helper.GetSize(Bitrate, "字节") + " 每秒") +
+                       (UrlUnavailableException == null ? string.Empty : "; 错误：" + UrlUnavailableException.Message);
             }
         }
 
@@ -298,10 +298,6 @@ namespace Mygod.Net
 
             public string Name { get; private set; }
             public string Language { get; private set; }
-            public override string Properties
-            {
-                get { return string.Format("{0}{1}下载地址：{2}", this, Environment.NewLine, GetUrl()); }
-            }
             public override string Extension
             {
                 get
