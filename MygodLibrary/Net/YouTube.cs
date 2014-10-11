@@ -256,7 +256,7 @@ namespace Mygod.Net
             public override string ToString()
             {
                 return Type + (Size == null ? string.Empty : "; " + Size) + (Stereo3D ? "; 3D" : string.Empty) +
-                       (Bitrate == 0 ? string.Empty : "; " + Helper.GetSize(Bitrate, "字节") + " 每秒") +
+                       (Bitrate == 0 ? string.Empty : "; " + Helper.GetSize(Bitrate / 8.0, "字节") + " 每秒") +
                        (UrlUnavailableException == null ? string.Empty : "; 错误：" + UrlUnavailableException.Message);
             }
         }
