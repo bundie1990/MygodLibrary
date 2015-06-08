@@ -39,7 +39,7 @@ namespace Mygod.Net
             private static readonly Regex
                 R0 = new Regex("data-video-id=(\"|')([A-Za-z0-9_\\-]{11})\\1", RegexOptions.Compiled),
                 R1 = new Regex("(\\?|&)v=([A-Za-z0-9_\\-]{11})", RegexOptions.Compiled),
-                R2 = new Regex("youtube(|\\.googleapis)\\.com/(v|embed)/([A-Za-z0-9_\\-]{11})", RegexOptions.Compiled);
+                R2 = new Regex("youtube(\\.googleapis)?\\.com/(v|embed)/([A-Za-z0-9_\\-]{11})", RegexOptions.Compiled);
             private static IEnumerable<Video> GetVideoFromContent(ISet<string> exception, string link,
                                                                   IWebProxy proxy = null)
             {

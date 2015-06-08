@@ -64,7 +64,7 @@ namespace Mygod.Windows
         protected void SetAeroGlassTransparency()
         {
             // Set the Background to transparent from Win32 perpective 
-            var source = HwndSource.FromHwnd(windowHandle);
+            var source = HwndSource.FromHwnd(WindowHandle);
             if (source != null && source.CompositionTarget != null) source.CompositionTarget.BackgroundColor = Colors.Transparent;
 
             // Set the Background to transparent from WPF perpective 
@@ -79,7 +79,7 @@ namespace Mygod.Windows
             var margins = new Margins(true);
             try
             {
-                DesktopWindowManagerNativeMethods.DwmExtendFrameIntoClientArea(windowHandle, ref margins);
+                DesktopWindowManagerNativeMethods.DwmExtendFrameIntoClientArea(WindowHandle, ref margins);
             }
             catch (DllNotFoundException) { }
         }
@@ -87,7 +87,7 @@ namespace Mygod.Windows
         #endregion
 
         #region implementation
-        private IntPtr windowHandle;
+        protected IntPtr WindowHandle;
 
         private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
@@ -133,10 +133,10 @@ namespace Mygod.Windows
         {
             base.OnSourceInitialized(e);
             var interopHelper = new WindowInteropHelper(this);
-            windowHandle = interopHelper.Handle;
+            WindowHandle = interopHelper.Handle;
 
             // add Window Proc hook to capture DWM messages
-            var source = HwndSource.FromHwnd(windowHandle);
+            var source = HwndSource.FromHwnd(WindowHandle);
             if (source != null) source.AddHook(WndProc);
 
             //ResetAeroGlass();

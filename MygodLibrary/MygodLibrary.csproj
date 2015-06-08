@@ -94,6 +94,7 @@
     <Compile Include="IO\IniFile.cs" />
     <Compile Include="Media\Buzzer.cs" />
     <Compile Include="Net\LinkConverter.cs" />
+    <Compile Include="Net\NetworkInformation\NetworkTester.cs" />
     <Compile Include="Net\WebsiteManager.cs" />
     <Compile Include="Net\YouTube.cs" />
     <Compile Include="AssemblyInfo.cs" />
@@ -109,6 +110,7 @@
     <Compile Include="Runtime\Serialization\Plist\TypeCacheItem.cs" />
     <Compile Include="Runtime\Serialization\Plist\UniqueValueCache.cs" />
     <Compile Include="Security\Cryptography\MD5Helper.cs" />
+    <Compile Include="Text\Csv.cs" />
     <Compile Include="Text\Kmp.cs" />
     <Compile Include="Windows\Automation\Peers\AutoCompleteBoxAutomationPeer.cs" />
     <Compile Include="Windows\ColorUtilities.cs" />
