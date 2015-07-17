@@ -163,14 +163,16 @@ namespace Mygod.Windows
         {
             try
             {
-                if (aeroGlassCompositionEnabled)
+                // no longer usable in windows 10
+                if (Environment.OSVersion.Version.Major == 6 && aeroGlassCompositionEnabled)
                 {
                     ResetAeroGlass();
                     SetAeroGlassTransparency();
                     InvalidateVisual();
-                    if (Environment.OSVersion.Version.Major == 6 && Environment.OSVersion.Version.Minor <= 1) // vista & 7
-                        Resources["GlowingEffect"] = new DropShadowEffect
-                            { Color = Colors.White, ShadowDepth = 0, RenderingBias = RenderingBias.Quality, BlurRadius = 8 };
+                    if (Environment.OSVersion.Version.Minor <= 1) Resources["GlowingEffect"] = new DropShadowEffect
+                        {
+                            Color = Colors.White, ShadowDepth = 0, RenderingBias = RenderingBias.Quality, BlurRadius = 8
+                        };  // vista & 7
                 }
                 else
                 {
