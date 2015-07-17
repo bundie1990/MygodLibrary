@@ -111,16 +111,23 @@ namespace Mygod.Windows.Input
     public enum StandardCursor
     {
         // ReSharper disable InconsistentNaming
-        Arrow = 32512, IBeam = 32513, Wait = 32514, Cross = 32515, UpArrow = 32516, [Obsolete] Size = 32640, [Obsolete] Icon = 32641, 
-        SizeNwSe = 32642, SizeNeSw = 32643, SizeWe = 32644, SizeNs = 32645, SizeAll = 32646, No = 32648, Hand = 32649,
-        AppStarting = 32650, Help = 32651
+        Arrow = 32512, IBeam = 32513, Wait = 32514, Cross = 32515, UpArrow = 32516, [Obsolete] Size = 32640,
+        [Obsolete] Icon = 32641, SizeNwSe = 32642, SizeNeSw = 32643, SizeWe = 32644, SizeNs = 32645, SizeAll = 32646,
+        No = 32648, Hand = 32649, AppStarting = 32650, Help = 32651
         // ReSharper restore InconsistentNaming
     }
 
     public sealed class CursorHider
     {
-        private readonly Bitmap empty = new Bitmap(1, 1);
-        private readonly Dictionary<StandardCursor, SystemCursor> hiddenCursors = new Dictionary<StandardCursor, SystemCursor>();
+        static CursorHider()
+        {
+            empty = new Bitmap(32, 32);
+            empty.SetPixel(0, 0, Color.FromArgb(1, 0, 0, 0));
+        }
+
+        private static readonly Bitmap empty;
+        private readonly Dictionary<StandardCursor, SystemCursor> hiddenCursors =
+            new Dictionary<StandardCursor, SystemCursor>();
 
         public bool Show(StandardCursor cursor)
         {
