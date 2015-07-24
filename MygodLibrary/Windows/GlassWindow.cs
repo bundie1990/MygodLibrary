@@ -204,7 +204,7 @@ namespace Mygod.Windows
         /// <summary>
         /// The new GlassAvailable state
         /// </summary>
-        public bool GlassAvailable { get; private set; }
+        public bool GlassAvailable { get; }
     }
 
     internal static class DwmMessages

@@ -422,9 +422,9 @@ namespace Mygod.Windows.Controls
             // the default value is Double.NaN.
             useSide1 = true;
             double result;
-            if (Double.IsNaN(side1))
+            if (double.IsNaN(side1))
             {
-                if (Double.IsNaN(side2))
+                if (double.IsNaN(side2))
                 {
                     // Both sides have no value, so set the
                     // first side to a value of zero.

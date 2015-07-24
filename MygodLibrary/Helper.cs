@@ -17,26 +17,6 @@
     public static class Helper
     {
         /// <summary>
-        /// 用与 System.Windows.Threading.Dispatcher 关联的线程上的指定参数同步执行指定委托。
-        /// </summary>
-        /// <param name="dispatcher">指定 System.Windows.Threading.Dispatcher。</param>
-        /// <param name="a">该方法将被送到队列中。</param>
-        public static void Invoke(this Dispatcher dispatcher, Action a)
-        {
-            dispatcher.Invoke(a);
-        }
-
-        /// <summary>
-        /// 用与 System.Windows.Threading.Dispatcher 关联的线程上的指定参数同步执行指定委托。
-        /// </summary>
-        /// <param name="dispatcher">指定 System.Windows.Threading.Dispatcher。</param>
-        /// <param name="a">该方法将被送到队列中。</param>
-        public static T Invoke<T>(this Dispatcher dispatcher, Func<T> a)
-        {
-            return (T) dispatcher.Invoke(a);
-        }
-        
-        /// <summary>
         /// 用于将错误转化为可读的字符串。
         /// </summary>
         /// <param name="e">错误。</param>
@@ -105,7 +85,7 @@
             return s.IndexOf(value, comparison) >= 0;
         }
 
-        public static void DoNothing<T>(this T stuff)
+        public static void DoNothing<T>(this T _)
         {
         }
 
@@ -119,14 +99,12 @@
 
         public static string UrlDecode(this string str)
         {
-            if (str == null) return null;
-            return Uri.UnescapeDataString(str.Replace('+', ' '));
+            return str == null ? null : Uri.UnescapeDataString(str.Replace('+', ' '));
         }
 
         public static string UrlEncode(this string str)
         {
-            if (str == null) return null;
-            return Uri.EscapeDataString(str);
+            return str == null ? null : Uri.EscapeDataString(str);
         }
 
         public static void CheckLastWin32Error()

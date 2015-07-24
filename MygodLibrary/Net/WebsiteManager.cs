@@ -9,19 +9,15 @@ namespace Mygod.Net
     {
         private static readonly WebClient Client = new WebClient();
 
-        private static string UpdateUrl
-        {
-            get { return "http://mygod.tk/product/update/" + CurrentApp.Version.Revision + '/'; }
-        }
-        public static string Url { get { return Client.DownloadString(UpdateUrl); } }
+        private static string UpdateUrl => "http://mygod.tk/product/update/" + CurrentApp.Version.Revision + '/';
+        public static string Url => Client.DownloadString(UpdateUrl);
 
         public static void CheckForUpdates(Action noUpdates = null, Action<Exception> errorCallback = null)
         {
             try
             {
                 var url = Url;
-                if (!string.IsNullOrWhiteSpace(url)) Process.Start(url);
-                else if (noUpdates != null) noUpdates();
+                if (!string.IsNullOrWhiteSpace(url)) Process.Start(url); else noUpdates?.Invoke();
             }
             catch (Exception e)
             {

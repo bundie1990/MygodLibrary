@@ -66,13 +66,13 @@ namespace Mygod.Windows.Controls
         {
             long? result;
 
-            if (String.IsNullOrEmpty(text))
+            if (string.IsNullOrEmpty(text))
                 return null;
 
             try
             {
                 //don't know why someone would format an integer as %, but just in case they do.
-                result = FormatString.Contains("P") ? Decimal.ToInt64(ParsePercent(text, CultureInfo)) : ParseLong(text, CultureInfo);
+                result = FormatString.Contains("P") ? decimal.ToInt64(ParsePercent(text, CultureInfo)) : ParseLong(text, CultureInfo);
                 result = CoerceValue(result);
             }
             catch

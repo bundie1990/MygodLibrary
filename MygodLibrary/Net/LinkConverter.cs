@@ -18,7 +18,7 @@ namespace Mygod.Net
 
         public static string PublicEncode(string link, string linkpre, string prefix, string suffix, string name)
         {
-            if (String.IsNullOrEmpty(link)) throw new ArgumentNullException("link");
+            if (string.IsNullOrEmpty(link)) throw new ArgumentNullException(nameof(link));
             if (link.ToLowerInvariant().StartsWith(linkpre.ToLowerInvariant(), StringComparison.Ordinal))
                 throw new ArgumentException("该链接已经是" + name + "下载链接。");
             return linkpre + Base64Encode(prefix + link + suffix);
@@ -26,7 +26,7 @@ namespace Mygod.Net
 
         public static string PublicDecode(string link, string linkpre, string prefix, string suffix, string name)
         {
-            if (String.IsNullOrEmpty(link)) throw new ArgumentNullException("link");
+            if (string.IsNullOrEmpty(link)) throw new ArgumentNullException(nameof(link));
             if (!link.ToLowerInvariant().StartsWith(linkpre.ToLowerInvariant(), StringComparison.Ordinal))
                 throw new ArgumentException("该链接不是" + name + "下载链接。");
             link = link.TrimEnd('\\', '/', ' ', '\t', '\r', '\n');
@@ -58,22 +58,22 @@ namespace Mygod.Net
 
         public static string QQDLEncode(string link)
         {
-            return PublicEncode(link, "qqdl://", String.Empty, String.Empty, "旋风");
+            return PublicEncode(link, "qqdl://", string.Empty, string.Empty, "旋风");
         }
 
         public static string QQDLDecode(string link)
         {
-            return PublicDecode(link, "qqdl://", String.Empty, String.Empty, "旋风");
+            return PublicDecode(link, "qqdl://", string.Empty, string.Empty, "旋风");
         }
 
         public static string RayFileEncode(string link)
         {
-            return PublicEncode(link, "fs2you://", String.Empty, String.Empty, "RayFile");
+            return PublicEncode(link, "fs2you://", string.Empty, string.Empty, "RayFile");
         }
 
         public static string RayFileDecode(string link)
         {
-            return PublicDecode(link, "fs2you://", String.Empty, String.Empty, "RayFile");
+            return PublicDecode(link, "fs2you://", string.Empty, string.Empty, "RayFile");
         }
 
         public static string Reverse(string value)

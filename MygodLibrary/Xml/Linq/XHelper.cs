@@ -62,8 +62,7 @@ namespace Mygod.Xml.Linq
 
         public static string GetAttributeValue(this XElement element, XName name)
         {
-            var attr = element.AttributeCaseInsensitive(name);
-            return attr == null ? null : attr.Value;
+            return element.AttributeCaseInsensitive(name)?.Value;
         }
 
         private static bool IsNullable(Type type)

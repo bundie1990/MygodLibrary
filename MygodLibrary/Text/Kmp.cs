@@ -62,7 +62,7 @@ namespace Mygod.Text
                 Kmp = new Kmp(kmp);
             }
 
-            public Kmp Kmp { get; private set; }
+            public Kmp Kmp { get; }
             private int i;
 
             public bool Enter(byte next)

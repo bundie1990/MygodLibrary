@@ -68,12 +68,12 @@ namespace Mygod.Windows.Controls
         {
             double? result = null;
 
-            if (String.IsNullOrEmpty(text))
+            if (string.IsNullOrEmpty(text))
                 return result;
 
             try
             {
-                result = FormatString.Contains("P") ? Decimal.ToDouble(ParsePercent(text, CultureInfo)) : ParseDouble(text, CultureInfo);
+                result = FormatString.Contains("P") ? decimal.ToDouble(ParsePercent(text, CultureInfo)) : ParseDouble(text, CultureInfo);
                 result = CoerceValue(result);
             }
             catch

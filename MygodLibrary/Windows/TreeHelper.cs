@@ -22,7 +22,8 @@ namespace Mygod.Windows
             {
                 var child = VisualTreeHelper.GetChild(obj, i);
                 var test = child as T;
-                if (test != null && (name == null || test is FrameworkElement && (test as FrameworkElement).Name == name)) return test;
+                if (test != null && (name == null || test is FrameworkElement && (test as FrameworkElement).Name == name))
+                    return test;
                 var childOfChild = FindVisualChild<T>(child);
                 if (childOfChild != null) return childOfChild;
             }
@@ -43,7 +44,8 @@ namespace Mygod.Windows
         public static IEnumerable<DependencyObject> GetVisualChildren(this DependencyObject parent)
         {
             var childCount = VisualTreeHelper.GetChildrenCount(parent);
-            for (var counter = 0; counter < childCount; counter++) yield return VisualTreeHelper.GetChild(parent, counter);
+            for (var counter = 0; counter < childCount; counter++)
+                yield return VisualTreeHelper.GetChild(parent, counter);
         }
 
         /// <summary>
@@ -62,7 +64,8 @@ namespace Mygod.Windows
             {
                 var element = queue.Dequeue();
                 yield return element;
-                foreach (var visualChild in element.GetVisualChildren().OfType<FrameworkElement>()) queue.Enqueue(visualChild);
+                foreach (var visualChild in element.GetVisualChildren().OfType<FrameworkElement>())
+                    queue.Enqueue(visualChild);
             }
         }
     }

@@ -68,7 +68,7 @@ namespace Mygod.Windows.Controls
         {
             decimal? result = null;
 
-            if (String.IsNullOrEmpty(text))
+            if (string.IsNullOrEmpty(text))
                 return result;
 
             try

@@ -191,19 +191,20 @@
             double shrinkRate = 400;
             while (true)
             {
-                Dispatcher.Invoke((Action) (() =>
+                Dispatcher.Invoke(() =>
                 {
                     var current = GetMousePoint();
                     if (points.Count > 0)
                     {
                         var last = points.Last.Value;
-                        double disx = current.X - last.X, disy = current.Y - last.Y, distance = Math.Sqrt(disx * disx + disy * disy);
+                        double disx = current.X - last.X, disy = current.Y - last.Y,
+                               distance = Math.Sqrt(disx * disx + disy * disy);
                         var dis = (int) Math.Floor(distance);
                         for (var i = 0; i < dis; i++) AddPoint(last.X + disx / dis * i, last.Y + disy / dis * i);
                     }
                     AddPoint(current);
                     shrinkRate = ShrinkRate;
-                }));
+                });
                 Thread.Sleep(TimeSpan.FromSeconds(1 / shrinkRate));
             }
         }

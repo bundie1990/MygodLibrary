@@ -54,7 +54,7 @@ namespace Mygod.Windows.Controls
         /// True if the property change is cancellable. false if the property
         /// change is not cancellable.
         /// </value>
-        public bool IsCancelable { get; private set; }
+        public bool IsCancelable { get; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the property change that

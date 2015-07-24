@@ -450,7 +450,7 @@ namespace Mygod.Windows.Controls
 
       foreach( var item in ColorUtilities.KnownColors )
       {
-        if( !String.Equals( item.Key, "Transparent" ) )
+        if( !string.Equals( item.Key, "Transparent" ) )
         {
           var colorItem = new ColorItem( item.Value, item.Key );
           if( !_standardColors.Contains( colorItem ) )

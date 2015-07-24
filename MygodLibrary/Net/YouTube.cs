@@ -121,29 +121,17 @@ namespace Mygod.Net
 
             private readonly string id;
             private readonly Dictionary<string, string> information;
-            public readonly List<Downloadable> Downloads = new List<Downloadable>();
+            public readonly List<Downloadable> Downloads;
 
-            public string Title { get { return information["title"]; } }
-            public string Author { get { return information["author"]; } }
-            public string[] Keywords
-            {
-                get { return information["keywords"] == null ? null : information["keywords"].Split(','); }
-            }
-            public double AverageRating { get { return double.Parse(information["avg_rating"]); } }
-            public long ViewCount { get { return long.Parse(information["view_count"]); } }
-            public DateTime UploadTime
-            {
-                get
-                {
-                    return new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
-                        .AddSeconds(double.Parse(information["timestamp"]));
-                }
-            }
-            public TimeSpan Length
-            {
-                get { return TimeSpan.FromSeconds(double.Parse(information["length_seconds"])); }
-            }
-            public string Url { get { return "http://www.youtube.com/watch?v=" + id; } }
+            public string Title => information["title"];
+            public string Author => information["author"];
+            public string[] Keywords => information["keywords"]?.Split(',');
+            public double AverageRating => double.Parse(information["avg_rating"]);
+            public long ViewCount => long.Parse(information["view_count"]);
+            public DateTime UploadTime => new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
+                .AddSeconds(double.Parse(information["timestamp"]));
+            public TimeSpan Length => TimeSpan.FromSeconds(double.Parse(information["length_seconds"]));
+            public string Url => "http://www.youtube.com/watch?v=" + id;
 
             public override bool Equals(object obj)
             {
@@ -157,7 +145,7 @@ namespace Mygod.Net
             }
             public override int GetHashCode()
             {
-                return (id != null ? id.GetHashCode() : 0);
+                return id?.GetHashCode() ?? 0;
             }
             public override string ToString()
             {
@@ -173,9 +161,9 @@ namespace Mygod.Net
             }
 
             private readonly Video parent;
-            public Video Parent { get { return parent; } }
+            public Video Parent => parent;
             public Exception UrlUnavailableException { get; protected set; }
-            public virtual string Properties { get { return ToString(); } }
+            public virtual string Properties => ToString();
             public abstract string GetUrl(string fileName = null);
             public abstract string Extension { get; }
         }
@@ -227,7 +215,7 @@ namespace Mygod.Net
             public readonly bool Stereo3D;
             // ReSharper restore MemberCanBePrivate.Global
 
-            public override string Properties { get { return "#" + ITag + ' ' + base.Properties; } }
+            public override string Properties => "#" + ITag + ' ' + base.Properties;
 
             public override string Extension
             {
@@ -250,7 +238,8 @@ namespace Mygod.Net
             {
                 if (string.IsNullOrEmpty(fileName)) return url;
                 return url + "&title=" + fileName.ToValidPath().UrlEncode().UrlEncode();
-                // double encode or non-ascii characters will go wrong in C# apps (HOLY SH*T THIS GODDAMN THING IS REALLY ANNOYING)
+                // double encode or non-ascii characters will go wrong in C# apps
+                // (HOLY SH*T THIS GODDAMN THING IS REALLY ANNOYING)
             }
 
             public override string ToString()
@@ -296,8 +285,8 @@ namespace Mygod.Net
             private readonly long id;
             private readonly string langCode, vssID, extension, url;
 
-            public string Name { get; private set; }
-            public string Language { get; private set; }
+            public string Name { get; }
+            public string Language { get; }
             public override string Extension
             {
                 get
@@ -311,7 +300,7 @@ namespace Mygod.Net
 
             public override string GetUrl(string fileName = null)
             {
-                return string.Format("{0}&type=track&lang={1}&name={2}&kind&fmt={3}", url, langCode, Name, extension);
+                return $"{url}&type=track&lang={langCode}&name={Name}&kind&fmt={extension}";
             }
 
             public override string ToString()

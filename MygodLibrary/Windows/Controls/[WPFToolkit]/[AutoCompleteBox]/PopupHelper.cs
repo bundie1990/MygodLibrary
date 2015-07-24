@@ -39,7 +39,7 @@ namespace Mygod.Windows.Controls
         /// <summary>
         /// Gets or sets the parent control.
         /// </summary>
-        private Control Parent { get; set; }
+        private Control Parent { get; }
 
 #if SILVERLIGHT
         /// <summary>
@@ -61,7 +61,7 @@ namespace Mygod.Windows.Controls
         /// <summary>
         /// Gets the Popup control instance.
         /// </summary>
-        public Popup Popup { get; private set; }
+        public Popup Popup { get; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the actual Popup is open.

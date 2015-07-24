@@ -76,7 +76,7 @@ namespace Mygod.Windows.Controls.Primitives
 
     #region Text
 
-    public static readonly DependencyProperty TextProperty = DependencyProperty.Register( "Text", typeof( string ), typeof( InputBase ), new UIPropertyMetadata( default( String ), OnTextChanged ) );
+    public static readonly DependencyProperty TextProperty = DependencyProperty.Register( "Text", typeof( string ), typeof( InputBase ), new UIPropertyMetadata( default( string ), OnTextChanged ) );
     public string Text
     {
       get

@@ -40,7 +40,7 @@ namespace Mygod.Windows.Controls
         #region FormatString
 
         public static readonly DependencyProperty FormatStringProperty = DependencyProperty.Register("FormatString", typeof(string),
-            typeof(NumericUpDown<T>), new UIPropertyMetadata(String.Empty, OnFormatStringChanged));
+            typeof(NumericUpDown<T>), new UIPropertyMetadata(string.Empty, OnFormatStringChanged));
 
         public string FormatString
         {
@@ -120,22 +120,22 @@ namespace Mygod.Windows.Controls
 
         protected static decimal ParseDecimal(string text, IFormatProvider cultureInfo)
         {
-            return Decimal.Parse(text, NumberStyles.Any, cultureInfo);
+            return decimal.Parse(text, NumberStyles.Any, cultureInfo);
         }
 
         protected static double ParseDouble(string text, IFormatProvider cultureInfo)
         {
-            return Double.Parse(text, NumberStyles.Any, cultureInfo);
+            return double.Parse(text, NumberStyles.Any, cultureInfo);
         }
 
         protected static int ParseInt(string text, IFormatProvider cultureInfo)
         {
-            return Int32.Parse(text, NumberStyles.Any, cultureInfo);
+            return int.Parse(text, NumberStyles.Any, cultureInfo);
         }
 
         protected static long ParseLong(string text, IFormatProvider cultureInfo)
         {
-            return Int64.Parse(text, NumberStyles.Any, cultureInfo);
+            return long.Parse(text, NumberStyles.Any, cultureInfo);
         }
 
         protected static decimal ParsePercent(string text, IFormatProvider cultureInfo)
@@ -144,7 +144,7 @@ namespace Mygod.Windows.Controls
 
             text = text.Replace(info.PercentSymbol, null);
 
-            decimal result = Decimal.Parse(text, NumberStyles.Any, info);
+            decimal result = decimal.Parse(text, NumberStyles.Any, info);
             result = result / 100;
 
             return result;

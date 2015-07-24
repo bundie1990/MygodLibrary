@@ -32,12 +32,12 @@ namespace Mygod.Runtime.Serialization.Plist
         /// <summary>
         ///     Gets the array's object reference collection.
         /// </summary>
-        public IList<int> ObjectReference { get; private set; }
+        public IList<int> ObjectReference { get; }
 
         /// <summary>
         ///     Gets a reference to the binary plist's object table.
         /// </summary>
-        public IList<BinaryPlistItem> ObjectTable { get; private set; }
+        public IList<BinaryPlistItem> ObjectTable { get; }
 
         /// <summary>
         ///     Converts this instance into an <see cref="T:object[]" /> array.

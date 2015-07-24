@@ -154,8 +154,8 @@ namespace Mygod.Windows
 
         private class ResourceName
         {
-            public IntPtr Id { get; private set; }
-            public string Name { get; private set; }
+            public IntPtr Id { get; }
+            public string Name { get; }
 
             private IntPtr _bufPtr = IntPtr.Zero;
 
@@ -424,7 +424,7 @@ namespace Mygod.Windows
 
         public override string ToString()
         {
-            string text = String.Format("IconExtractor (Filename: '{0}', IconCount: {1})", Filename, IconCount);
+            string text = string.Format("IconExtractor (Filename: '{0}', IconCount: {1})", Filename, IconCount);
             return text;
         }
 

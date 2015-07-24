@@ -727,7 +727,7 @@ namespace Mygod.Windows.Input
         /// hooks will not receive hook notifications and may behave incorrectly as a result. If the hook 
         /// procedure does not call CallNextHookEx, the return value should be zero. 
         /// </returns>
-        private int KeyboardHookProc(int nCode, Int32 wParam, IntPtr lParam)
+        private int KeyboardHookProc(int nCode, int wParam, IntPtr lParam)
         {
             //indicates if any of underlaing events set e.Handled flag
             bool handled = false;
@@ -761,7 +761,7 @@ namespace Mygod.Windows.Input
                               MyKeyboardHookStruct.flags) == 1)
                     {
                         char key = (char)inBuffer[0];
-                        if ((isDownCapslock ^ isDownShift) && Char.IsLetter(key)) key = Char.ToUpper(key);
+                        if ((isDownCapslock ^ isDownShift) && char.IsLetter(key)) key = char.ToUpper(key);
                         KeyPressEventArgs e = new KeyPressEventArgs(key);
                         KeyPress(this, e);
                         handled = handled || e.Handled;

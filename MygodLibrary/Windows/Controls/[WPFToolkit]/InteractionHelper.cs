@@ -42,7 +42,7 @@ namespace Mygod.Windows.Controls
         /// <summary>
         /// Gets the control the InteractionHelper is targeting.
         /// </summary>
-        public Control Control { get; private set; }
+        public Control Control { get; }
 
         /// <summary>
         /// Gets a value indicating whether the control has focus.

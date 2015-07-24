@@ -33,17 +33,17 @@ namespace Mygod.Runtime.Serialization.Plist
         /// <summary>
         ///     Gets the dictionary's key reference collection.
         /// </summary>
-        public IList<int> KeyReference { get; private set; }
+        public IList<int> KeyReference { get; }
 
         /// <summary>
         ///     Gets the dictionary's object reference collection.
         /// </summary>
-        public IList<int> ObjectReference { get; private set; }
+        public IList<int> ObjectReference { get; }
 
         /// <summary>
         ///     Gets a reference to the binary plist's object table.
         /// </summary>
-        public IList<BinaryPlistItem> ObjectTable { get; private set; }
+        public IList<BinaryPlistItem> ObjectTable { get; }
 
         /// <summary>
         ///     Converts this instance into a <see cref="Dictionary{Object, Object}" />.

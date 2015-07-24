@@ -47,7 +47,7 @@ namespace Mygod.Windows.Controls
 
         private void StartAnimation(double to)
         {
-            if (expandSite != null) expandSite.LayoutTransform.BeginAnimation(ScaleTransform.ScaleYProperty, 
+            expandSite?.LayoutTransform.BeginAnimation(ScaleTransform.ScaleYProperty, 
                 new DoubleAnimation {To = to, Duration = new Duration(TimeSpan.FromSeconds(0.25))});
         }
     }

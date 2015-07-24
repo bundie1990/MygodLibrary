@@ -69,7 +69,7 @@ namespace Mygod.Windows.Controls
 
       _spectrumDisplay = ( Rectangle )GetTemplateChild( "PART_SpectrumDisplay" );
       CreateSpectrum();
-      OnValueChanged( Double.NaN, Value );
+      OnValueChanged( double.NaN, Value );
     }
 
     protected override void OnValueChanged( double oldValue, double newValue )
