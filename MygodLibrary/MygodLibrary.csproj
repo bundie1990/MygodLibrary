@@ -10,7 +10,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Mygod</RootNamespace>
     <AssemblyName>MygodLibrary</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
@@ -124,6 +124,7 @@
     <Compile Include="Windows\Controls\Primitives\ButtonChrome.cs" />
     <Compile Include="Windows\Controls\[WPFToolkit]\[Extended]\[ColorCanvas]\ColorCanvas.cs" />
     <Compile Include="Windows\Controls\[WPFToolkit]\[Extended]\[ColorCanvas]\ColorSpectrumSlider.cs" />
+    <Compile Include="Windows\CurrentApp.Windows.cs" />
     <Compile Include="Windows\HsvColor.cs" />
     <Compile Include="Windows\Controls\Primitives\InputBase.cs" />
     <Compile Include="Windows\Controls\Primitives\UpDownBase.cs" />
