@@ -92,8 +92,6 @@
     <Compile Include="Collections\ObjectModel\AdvancedObservableKeyedCollection.cs" />
     <Compile Include="Collections\ObjectModel\ObservableKeyedCollection.cs" />
     <Compile Include="Helper.cs" />
-    <Compile Include="IO\IniFile.cs" />
-    <Compile Include="Media\Buzzer.cs" />
     <Compile Include="Net\LinkConverter.cs" />
     <Compile Include="Net\NetworkInformation\NetworkTester.cs" />
     <Compile Include="Net\WebsiteManager.cs" />

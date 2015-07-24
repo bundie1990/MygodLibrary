@@ -8,13 +8,13 @@
     using System.Windows.Threading;
 
     [Serializable]
-    public abstract class ObservableKeyedCollection<TKey, TItem> : KeyedCollection<TKey, TItem>, INotifyCollectionChanged, 
+    public abstract class ObservableKeyedCollection<TKey, TItem> : KeyedCollection<TKey, TItem>, INotifyCollectionChanged,
                                                                    INotifyPropertyChanged
     {
         private readonly SimpleMonitor monitor = new SimpleMonitor();
         private const string CountString = "Count";
         private const string IndexerName = "Item[]";
-        protected Dispatcher CurrentDispatcher = Dispatcher.CurrentDispatcher;
+        protected readonly Dispatcher CurrentDispatcher = Dispatcher.CurrentDispatcher;
 
         [field: NonSerialized]
         public event NotifyCollectionChangedEventHandler CollectionChanged;
@@ -32,8 +32,7 @@
         {
         }
 
-        protected ObservableKeyedCollection(IEqualityComparer<TKey> comparer)
-            : base(comparer)
+        protected ObservableKeyedCollection(IEqualityComparer<TKey> comparer) : base(comparer)
         {
         }
 
@@ -115,7 +114,7 @@
 
         protected virtual void OnPropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         protected override void RemoveItem(int index)
@@ -152,13 +151,7 @@
                 busyCount++;
             }
 
-            public bool Busy
-            {
-                get
-                {
-                    return (busyCount > 0);
-                }
-            }
+            public bool Busy => (busyCount > 0);
         }
     }
 }

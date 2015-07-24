@@ -31,13 +31,15 @@
 
         private void AddListener(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (e.OldItems != null) foreach (var i in e.OldItems) ((INotifyPropertyChanged)i).PropertyChanged -= OnItemPropertyChanged;
-            if (e.NewItems != null) foreach (var i in e.NewItems) ((INotifyPropertyChanged)i).PropertyChanged += OnItemPropertyChanged;
+            if (e.OldItems != null)
+                foreach (var i in e.OldItems) ((INotifyPropertyChanged)i).PropertyChanged -= OnItemPropertyChanged;
+            if (e.NewItems != null)
+                foreach (var i in e.NewItems) ((INotifyPropertyChanged)i).PropertyChanged += OnItemPropertyChanged;
         }
 
         private void OnItemPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (ItemPropertyChanged != null) ItemPropertyChanged(sender, e);
+            ItemPropertyChanged?.Invoke(sender, e);
         }
     }
 }
