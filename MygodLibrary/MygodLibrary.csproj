@@ -109,7 +109,6 @@
     <Compile Include="Runtime\Serialization\Plist\TypeCacheItem.cs" />
     <Compile Include="Runtime\Serialization\Plist\UniqueValueCache.cs" />
     <Compile Include="Security\Cryptography\MD5Helper.cs" />
-    <Compile Include="Text\Csv.cs" />
     <Compile Include="Text\Kmp.cs" />
     <Compile Include="Windows\Automation\Peers\AutoCompleteBoxAutomationPeer.cs" />
     <Compile Include="Windows\ColorUtilities.cs" />
@@ -193,6 +192,7 @@
     <Compile Include="Windows\[DragDrop]\WpfDropTargetHelperExtensions.cs" />
     <Compile Include="Windows\GlassWindow.cs" />
     <Compile Include="Xml\Linq\XHelper.cs" />
+    <Compile Include="Xml\Serialization\XmlSerialization.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Themes\Generic.xaml">
