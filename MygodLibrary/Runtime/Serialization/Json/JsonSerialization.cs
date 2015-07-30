@@ -24,6 +24,7 @@ namespace Mygod.Runtime.Serialization.Json
         }
         public static T DeserializeFromFile<T>(string path)
         {
+            if (!File.Exists(path)) return default(T);
             using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
                 return (T) GetSerializer<T>().ReadObject(stream);
         }

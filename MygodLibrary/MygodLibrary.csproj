@@ -92,11 +92,13 @@
     <Compile Include="Collections\ObjectModel\AdvancedObservableKeyedCollection.cs" />
     <Compile Include="Collections\ObjectModel\ObservableKeyedCollection.cs" />
     <Compile Include="Helper.cs" />
+    <Compile Include="IO\IniFile.cs" />
     <Compile Include="Net\LinkConverter.cs" />
     <Compile Include="Net\NetworkInformation\NetworkTester.cs" />
     <Compile Include="Net\WebsiteManager.cs" />
     <Compile Include="Net\YouTube.cs" />
     <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Runtime\Serialization\Json\JsonSerialization.cs" />
     <Compile Include="Runtime\Serialization\Plist\BinaryPlistArray.cs" />
     <Compile Include="Runtime\Serialization\Plist\BinaryPlistDictionary.cs" />
     <Compile Include="Runtime\Serialization\Plist\BinaryPlistItem.cs" />
