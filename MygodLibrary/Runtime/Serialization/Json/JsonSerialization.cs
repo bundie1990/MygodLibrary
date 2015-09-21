@@ -17,6 +17,15 @@ namespace Mygod.Runtime.Serialization.Json
             return Serializers[type] = new DataContractJsonSerializer(type);
         }
 
+        public static string SerializeToString<T>(T value)
+        {
+            using (var stream = new MemoryStream())
+            {
+                GetSerializer<T>().WriteObject(stream, value);
+                using (var reader = new StreamReader(stream)) return reader.ReadToEnd();
+            }
+        }
+
         public static void SerializeToFile<T>(string path, T value)
         {
             using (var stream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.Read))
