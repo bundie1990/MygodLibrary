@@ -9,7 +9,7 @@ namespace Mygod.Net
     {
         private static readonly WebClient Client = new WebClient();
 
-        private static string UpdateUrl => "http://mygod.tk/product/update/" + CurrentApp.Version.Revision + '/';
+        private static string UpdateUrl => "https://mygod.tk/product/update/" + CurrentApp.Version.Revision + '/';
         public static string Url => Client.DownloadString(UpdateUrl);
 
         public static void CheckForUpdates(Action noUpdates = null, Action<Exception> errorCallback = null)
