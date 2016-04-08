@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Json;
+using System.Text;
 
 namespace Mygod.Runtime.Serialization.Json
 {
@@ -25,17 +26,29 @@ namespace Mygod.Runtime.Serialization.Json
                 using (var reader = new StreamReader(stream)) return reader.ReadToEnd();
             }
         }
-
         public static void SerializeToFile<T>(string path, T value)
         {
             using (var stream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.Read))
                 GetSerializer<T>().WriteObject(stream, value);
         }
+
+        public static T DeserializeFromStream<T>(Stream stream)
+        {
+            return (T) GetSerializer<T>().ReadObject(stream);
+        }
         public static T DeserializeFromFile<T>(string path)
         {
             if (!File.Exists(path)) return default(T);
             using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
-                return (T) GetSerializer<T>().ReadObject(stream);
+                return DeserializeFromStream<T>(stream);
+        }
+        public static T DeserializeFromString<T>(string str)
+        {
+            using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(str)))
+            {
+                stream.Position = 0;
+                return DeserializeFromStream<T>(stream);
+            }
         }
     }
 }
