@@ -1,7 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -33,6 +35,21 @@ namespace Mygod
             }
             var ae = e as AggregateException;
             if (ae != null) foreach (var ex in ae.InnerExceptions) GetMessage(ex, result);
+        }
+
+        /// <summary>
+        /// ToString with CultureInfo.InvariantCulture.
+        /// </summary>
+        /// <param name="value">The object.</param>
+        /// <typeparam name="T">The type.</typeparam>
+        public static string ToStringInvariant<T>(this T value)
+        {
+            if (value == null) return null;
+            var method = typeof(T).GetMethod("ToString", BindingFlags.Public, null,
+                new[] {typeof(IFormatProvider)}, null);
+            if (method != null && method.ReturnType == typeof(string))
+                return (string) method.Invoke(value, new object[] {CultureInfo.InvariantCulture});
+            return value.ToString();    // fallback to simple method
         }
 
         /// <summary>

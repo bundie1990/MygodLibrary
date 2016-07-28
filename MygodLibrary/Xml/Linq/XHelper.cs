@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -106,12 +107,16 @@ namespace Mygod.Xml.Linq
             var str = element.GetAttributeValue(name);
             if (string.IsNullOrWhiteSpace(str)) return defaultValue;
             while (IsNullable(type)) type = type.GetGenericArguments()[0];
-            var parse = type.GetMethod("Parse", BindingFlags.Public | BindingFlags.Static, null,
-                                       new[] { typeof(string) }, null);
             if (type == typeof(string)) return (T)(object)str;
-            if (parse == null || parse.ReturnType != type) throw new NotSupportedException(
-                "You must define a public static T Parse(string) method before using GetAttributeValueWithDefault<T>!");
-            return (T) parse.Invoke(null, new object[] { str });
+            var parse = type.GetMethod("Parse", BindingFlags.Public | BindingFlags.Static, null,
+                new[] {typeof(string), typeof(IFormatProvider)}, null);
+            if (parse != null && parse.ReturnType == type)
+                return (T) parse.Invoke(null, new object[] {str, CultureInfo.InvariantCulture});
+            parse = type.GetMethod("Parse", BindingFlags.Public | BindingFlags.Static, null,
+                new[] {typeof(string)}, null);
+            if (parse != null && parse.ReturnType == type) return (T)parse.Invoke(null, new object[] { str });
+            throw new NotSupportedException("You must define a public static T Parse(string[, IFormatProvider]) " +
+                                            "method before invoking GetAttributeValueWithDefault<T>!");
         }
 
         public static void GetAttributeValueWithDefault<T>(this XElement element, out T result, XName name,
@@ -140,7 +145,7 @@ namespace Mygod.Xml.Linq
                                                            T defaultValue = default(T))
         {
             if (!ReferenceEquals(value, defaultValue) && !ReferenceEquals(value, null) && !value.Equals(defaultValue))
-                element.SetAttributeValue(name, value.ToString());
+                element.SetAttributeValue(name, value.ToStringInvariant());
         }
     }
 }
