@@ -96,7 +96,6 @@
     <Compile Include="Net\LinkConverter.cs" />
     <Compile Include="Net\NetworkInformation\NetworkTester.cs" />
     <Compile Include="Net\WebsiteManager.cs" />
-    <Compile Include="Net\YouTube.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Runtime\Serialization\Json\JsonSerialization.cs" />
     <Compile Include="Runtime\Serialization\Plist\BinaryPlistArray.cs" />
