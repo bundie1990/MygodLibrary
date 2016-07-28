@@ -112,8 +112,7 @@ namespace Mygod
                 n /= 1024;
                 i++;
             }
-            return i == 0 ? size.ToString("N0") + ' ' + bytes
-                          : n.ToString("N") + ' ' + Units[i] + " (" + size.ToString("N0") + ' ' + bytes + ')';
+            return i == 0 ? $"{size:N0} {bytes}" : $"{n:N} {Units[i]} ({size:N0} {bytes})";
         }
 
         public static string GetSize(double size, string bytes = "Bytes")
