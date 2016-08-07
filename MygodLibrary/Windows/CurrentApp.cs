@@ -10,7 +10,7 @@ namespace Mygod.Windows
         private static AssemblyName NowAssemblyName => Assembly.GetEntryAssembly().GetName();
         public static string Name => NowAssemblyName.Name;
         public static Version Version => NowAssemblyName.Version;
-        public static string Title => Name + " V" + Version;
+        public static string Title => $"{Name} {Version.Major}.{Version.Minor}.{Version.Build}";
         public static string Path => Assembly.GetEntryAssembly().Location;
         public static string Directory => AppDomain.CurrentDomain.BaseDirectory;
 
