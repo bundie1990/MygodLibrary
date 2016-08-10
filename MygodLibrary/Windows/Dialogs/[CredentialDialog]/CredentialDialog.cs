@@ -496,10 +496,7 @@ namespace Mygod.Windows.Dialogs
 
             IntPtr ownerHandle = owner == null ? IntPtr.Zero : new WindowInteropHelper(owner).Handle;
             bool result;
-            if (NativeMethods.IsWindowsVistaOrLater)
-                result = PromptForCredentialsCredUIWin(ownerHandle, storedCredentials);
-            else
-                result = PromptForCredentialsCredUI(ownerHandle, storedCredentials);
+            result = PromptForCredentialsCredUIWin(ownerHandle, storedCredentials);
             return result;
         }
 
@@ -770,44 +767,6 @@ namespace Mygod.Windows.Dialogs
         {
             if (PasswordChanged != null)
                 PasswordChanged(this, e);
-        }
-
-        private bool PromptForCredentialsCredUI(IntPtr owner, bool storedCredentials)
-        {
-            NativeMethods.CREDUI_INFO info = CreateCredUIInfo(owner, true);
-            NativeMethods.CREDUI_FLAGS flags = NativeMethods.CREDUI_FLAGS.GENERIC_CREDENTIALS | NativeMethods.CREDUI_FLAGS.DO_NOT_PERSIST
-                                                                                              | NativeMethods.CREDUI_FLAGS.ALWAYS_SHOW_UI;
-            if (ShowSaveCheckBox)
-                flags |= NativeMethods.CREDUI_FLAGS.SHOW_SAVE_CHECK_BOX;
-
-            var user = new StringBuilder(NativeMethods.CREDUI_MAX_USERNAME_LENGTH);
-            user.Append(UserName);
-            var pw = new StringBuilder(NativeMethods.CREDUI_MAX_PASSWORD_LENGTH);
-            pw.Append(Password);
-
-            NativeMethods.CredUIReturnCodes result = NativeMethods.CredUIPromptForCredentials(ref info, Target, IntPtr.Zero, 0, user,
-                                                                                              NativeMethods.CREDUI_MAX_USERNAME_LENGTH, pw,
-                                                                                              NativeMethods.CREDUI_MAX_PASSWORD_LENGTH,
-                                                                                              ref _isSaveChecked, flags);
-            switch (result)
-            {
-                case NativeMethods.CredUIReturnCodes.NO_ERROR:
-                    UserName = user.ToString();
-                    Password = pw.ToString();
-                    if (ShowSaveCheckBox)
-                    {
-                        _confirmTarget = Target;
-                        // If the credential was stored previously but the user has now cleared the save checkbox,
-                        // we want to delete the credential.
-                        if (storedCredentials && !IsSaveChecked)
-                            DeleteCredential(Target);
-                    }
-                    return true;
-                case NativeMethods.CredUIReturnCodes.ERROR_CANCELLED:
-                    return false;
-                default:
-                    throw new CredentialException((int) result);
-            }
         }
 
         private bool PromptForCredentialsCredUIWin(IntPtr owner, bool storedCredentials)

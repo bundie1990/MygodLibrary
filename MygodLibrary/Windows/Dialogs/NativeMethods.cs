@@ -29,8 +29,6 @@ namespace Mygod.Windows.Dialogs
 		[DllImport("user32.dll")]
         internal static extern IntPtr DefWindowProc(IntPtr hwnd, uint msg, IntPtr wParam, IntPtr lParam);
 
-        public static bool IsWindowsVistaOrLater { get { return Environment.OSVersion.Platform == PlatformID.Win32NT && Environment.OSVersion.Version >= new Version(6, 0, 6000); } }
-
         #region LoadLibrary
 
         [DllImport("kernel32", CharSet = CharSet.Unicode, SetLastError = true)]
@@ -134,19 +132,6 @@ namespace Mygod.Windows.Dialogs
             [MarshalAs(UnmanagedType.LPWStr)]
             public string pszMessageText;
         }
-
-        [DllImport("credui.dll", CharSet = CharSet.Unicode)]
-        internal static extern CredUIReturnCodes CredUIPromptForCredentials(
-            ref CREDUI_INFO pUiInfo,
-            string targetName,
-            IntPtr Reserved,
-            int dwAuthError,
-            StringBuilder pszUserName,
-            uint ulUserNameMaxChars,
-            StringBuilder pszPassword,
-            uint ulPaswordMaxChars,
-            [MarshalAs(UnmanagedType.Bool), In, Out] ref bool pfSave,
-            CREDUI_FLAGS dwFlags);
 
         [DllImport("credui.dll", CharSet = CharSet.Unicode)]
         public static extern CredUIReturnCodes CredUIPromptForWindowsCredentials(
