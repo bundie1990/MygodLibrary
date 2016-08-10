@@ -434,13 +434,7 @@ namespace Mygod.Windows
 
                         // Create new icon.
                         destStream.Seek(0, SeekOrigin.Begin);
-                        try
-                        {
-                            splitIcons.Add(new Icon(destStream));
-                        }
-                        catch (Win32Exception)  // creating 256x256 icon on XP will fail
-                        {
-                        }
+                        splitIcons.Add(new Icon(destStream));
                     }
                 }
             }

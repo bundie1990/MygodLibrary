@@ -29,9 +29,6 @@ namespace Mygod.Windows.Dialogs
     ///         the credentials dialog. To specify the target for which the credentials should be saved, set the
     ///         <see cref="Target" /> property.
     ///     </para>
-    ///     <note>
-    ///         This class requires Windows XP or later.
-    ///     </note>
     /// </remarks>
     /// <threadsafety instance="false" static="true" />
     [DefaultProperty("MainInstruction"), DefaultEvent("UserNameChanged"),
@@ -225,12 +222,6 @@ namespace Mygod.Windows.Dialogs
         ///         from the other text. In the default style, this text is a slightly larger and colored blue. The style is identical
         ///         to the main instruction of a task dialog.
         ///     </para>
-        ///     <para>
-        ///         On Windows XP, this text is not distinguished from other text. It's display mode depends on the
-        ///         <see
-        ///             cref="DownlevelTextMode" />
-        ///         property.
-        ///     </para>
         /// </remarks>
         [Localizable(true), Category("Appearance"), Description("A brief message that will be displayed in the dialog box."),
          DefaultValue("")]
@@ -246,10 +237,6 @@ namespace Mygod.Windows.Dialogs
         ///     <para>
         ///         On Windows Vista and newer versions of Windows, this text is placed below the <see cref="MainInstruction" /> text.
         ///     </para>
-        ///     <para>
-        ///         On Windows XP, how and if this text is displayed depends on the value of the <see cref="DownlevelTextMode" />
-        ///         property.
-        ///     </para>
         /// </remarks>
         [Localizable(true), Category("Appearance"), Description("Additional text to display in the dialog."), DefaultValue("")]
         //[Editor(typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(System.Drawing.Design.UITypeEditor))]
@@ -258,29 +245,6 @@ namespace Mygod.Windows.Dialogs
             get { return _text ?? string.Empty; }
             set { _text = value; }
         }
-
-        /// <summary>
-        ///     Gets or sets a value that indicates how the text of the <see cref="MainInstruction" /> and <see cref="Content" /> properties
-        ///     is displayed on Windows XP.
-        /// </summary>
-        /// <value>
-        ///     One of the values of the <see cref="Dialogs.DownlevelTextMode" /> enumeration. The default value is
-        ///     <see cref="Dialogs.DownlevelTextMode.MainInstructionAndContent" />.
-        /// </value>
-        /// <remarks>
-        ///     <para>
-        ///         Windows XP does not support the distinct visual style of the main instruction, so there is no visual difference between the
-        ///         text of the <see cref="CredentialDialog.MainInstruction" /> and <see cref="CredentialDialog.Content" /> properties. Depending
-        ///         on your requirements, you may wish to hide either the main instruction or the content text.
-        ///     </para>
-        ///     <para>
-        ///         This property has no effect on Windows Vista and newer versions of Windows.
-        ///     </para>
-        /// </remarks>
-        [Localizable(true), Category("Appearance"),
-         Description("Indicates how the text of the MainInstruction and Content properties is displayed on Windows XP."),
-         DefaultValue(DownlevelTextMode.MainInstructionAndContent)]
-        public DownlevelTextMode DownlevelTextMode { get; set; }
 
         /// <summary>
         ///     Gets or sets a value that indicates whether a check box is shown on the dialog that allows the user to choose whether to save
@@ -771,7 +735,7 @@ namespace Mygod.Windows.Dialogs
 
         private bool PromptForCredentialsCredUIWin(IntPtr owner, bool storedCredentials)
         {
-            NativeMethods.CREDUI_INFO info = CreateCredUIInfo(owner, false);
+            NativeMethods.CREDUI_INFO info = CreateCredUIInfo(owner);
             var flags = NativeMethods.CredUIWinFlags.Generic;
             if (ShowSaveCheckBox)
                 flags |= NativeMethods.CredUIWinFlags.Checkbox;
@@ -836,38 +800,13 @@ namespace Mygod.Windows.Dialogs
             }
         }
 
-        private NativeMethods.CREDUI_INFO CreateCredUIInfo(IntPtr owner, bool downlevelText)
+        private NativeMethods.CREDUI_INFO CreateCredUIInfo(IntPtr owner)
         {
             var info = new NativeMethods.CREDUI_INFO();
             info.cbSize = Marshal.SizeOf(info);
             info.hwndParent = owner;
-            if (downlevelText)
-            {
-                info.pszCaptionText = WindowTitle;
-                switch (DownlevelTextMode)
-                {
-                    case DownlevelTextMode.MainInstructionAndContent:
-                        if (MainInstruction.Length == 0)
-                            info.pszMessageText = Content;
-                        else if (Content.Length == 0)
-                            info.pszMessageText = MainInstruction;
-                        else
-                            info.pszMessageText = MainInstruction + Environment.NewLine + Environment.NewLine + Content;
-                        break;
-                    case DownlevelTextMode.MainInstructionOnly:
-                        info.pszMessageText = MainInstruction;
-                        break;
-                    case DownlevelTextMode.ContentOnly:
-                        info.pszMessageText = Content;
-                        break;
-                }
-            }
-            else
-            {
-                // Vista and later don't use the window title.
-                info.pszMessageText = Content;
-                info.pszCaptionText = MainInstruction;
-            }
+            info.pszMessageText = Content;
+            info.pszCaptionText = MainInstruction;
             return info;
         }
 

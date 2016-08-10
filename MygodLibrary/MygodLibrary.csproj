@@ -178,7 +178,6 @@
       <DependentUpon>CredentialDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Windows\Dialogs\[CredentialDialog]\CredentialException.cs" />
-    <Compile Include="Windows\Dialogs\[CredentialDialog]\DownlevelTextMode.cs" />
     <Compile Include="Windows\Input\SystemCursor.cs" />
     <Compile Include="Windows\StartupManager.cs" />
     <Compile Include="Windows\TreeHelper.cs" />

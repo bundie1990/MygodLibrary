@@ -180,9 +180,6 @@ namespace Mygod.Windows
                     Resources["GlowingEffect"] = null;
                 }
             }
-            catch (DllNotFoundException)        // unsupported on XP & older devices
-            {
-            }
             catch (InvalidOperationException)   // window is too small
             {
             }
