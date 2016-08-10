@@ -163,8 +163,7 @@ namespace Mygod.Windows
         {
             try
             {
-                // no longer usable in windows 10
-                if (Environment.OSVersion.Version.Major == 6 && aeroGlassCompositionEnabled)
+                if (Environment.OSVersion.Version.Major >= 6 && aeroGlassCompositionEnabled)
                 {
                     ResetAeroGlass();
                     SetAeroGlassTransparency();
