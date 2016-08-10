@@ -179,6 +179,7 @@
     </Compile>
     <Compile Include="Windows\Dialogs\[CredentialDialog]\CredentialException.cs" />
     <Compile Include="Windows\Input\SystemCursor.cs" />
+    <Compile Include="Windows\PerMonitorDpiAwareWindow.cs" />
     <Compile Include="Windows\StartupManager.cs" />
     <Compile Include="Windows\TreeHelper.cs" />
     <Compile Include="Windows\Input\UserActivityHook.cs" />
