@@ -12,7 +12,7 @@ using System.Windows.Markup;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Mygod")]
 [assembly: AssemblyProduct("MygodLibrary")]
-[assembly: AssemblyCopyright("Copyright © Mygod 2010-2016")]
+[assembly: AssemblyCopyright("Copyright © Mygod 2010-2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -34,12 +34,12 @@ using System.Windows.Markup;
 // 可以指定所有这些值，也可以使用“内部版本号”和“修订号”的默认值，
 // 方法是按如下所示使用“*”:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.5.1.0")]
-[assembly: AssemblyFileVersion("1.5.1.0")]
+[assembly: AssemblyVersion("1.6.0.0")]
+[assembly: AssemblyFileVersion("1.6.0.0")]
 
-[assembly: XmlnsDefinition("http://schemas.mygod.tk/wpf", "Mygod.Windows")]
-[assembly: XmlnsDefinition("http://schemas.mygod.tk/wpf", "Mygod.Windows.Controls")]
-[assembly: XmlnsPrefix("http://schemas.mygod.tk/wpf", "m")]
+[assembly: XmlnsDefinition("http://schemas.mygod.be/wpf", "Mygod.Windows")]
+[assembly: XmlnsDefinition("http://schemas.mygod.be/wpf", "Mygod.Windows.Controls")]
+[assembly: XmlnsPrefix("http://schemas.mygod.be/wpf", "m")]
 [assembly: ThemeInfo(ResourceDictionaryLocation.SourceAssembly, ResourceDictionaryLocation.SourceAssembly)]
 
 [assembly:
