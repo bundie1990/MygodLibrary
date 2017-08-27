@@ -76,12 +76,31 @@ namespace Mygod.Windows
         /// </summary>
         protected void ResetAeroGlass()
         {
-            var margins = new Margins(true);
-            try
+            if (Environment.OSVersion.Version.Major >= 10)
             {
-                DesktopWindowManagerNativeMethods.DwmExtendFrameIntoClientArea(WindowHandle, ref margins);
+                var windowHelper = new WindowInteropHelper(this);
+                var accent = new AccentPolicy {AccentState = AccentState.ACCENT_ENABLE_TRANSPARENTGRADIENT};
+                var accentStructSize = Marshal.SizeOf(accent);
+                var accentPtr = Marshal.AllocHGlobal(accentStructSize);
+                Marshal.StructureToPtr(accent, accentPtr, false);
+                var data = new WindowCompositionAttributeData
+                {
+                    Attribute = WindowCompositionAttribute.WCA_ACCENT_POLICY,
+                    SizeOfData = accentStructSize,
+                    Data = accentPtr
+                };
+                DesktopWindowManagerNativeMethods.SetWindowCompositionAttribute(windowHelper.Handle, ref data);
+                Marshal.FreeHGlobal(accentPtr);
             }
-            catch (DllNotFoundException) { }
+            else
+            {
+                var margins = new Margins(true);
+                try
+                {
+                    DesktopWindowManagerNativeMethods.DwmExtendFrameIntoClientArea(WindowHandle, ref margins);
+                }
+                catch (DllNotFoundException) { }
+            }
         }
 
         #endregion
@@ -165,7 +184,8 @@ namespace Mygod.Windows
                     ResetAeroGlass();
                     SetAeroGlassTransparency();
                     InvalidateVisual();
-                    if (Environment.OSVersion.Version.Major == 6 && Environment.OSVersion.Version.Minor <= 1)   // win7
+                    if (Environment.OSVersion.Version.Major == 6 && Environment.OSVersion.Version.Minor <= 1 || // win7
+                        Environment.OSVersion.Version.Major >= 10)
                         Resources["GlowingEffect"] = new DropShadowEffect
                         {
                             Color = Colors.White, ShadowDepth = 0, RenderingBias = RenderingBias.Quality, BlurRadius = 8
@@ -221,7 +241,7 @@ namespace Mygod.Windows
         {
             LeftWidth = RightWidth = TopHeight = BottomHeight = (fullWindow ? -1 : 0);
         }
-    };
+    }
 
     /// <summary>
     /// Internal class that contains interop declarations for 
@@ -239,5 +259,41 @@ namespace Mygod.Windows
 
         [DllImport("dwmapi.dll")]
         internal static extern int DwmDefWindowProc(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam, ref IntPtr plResult);
+
+        [DllImport("user32.dll")]
+        internal static extern int SetWindowCompositionAttribute(IntPtr hwnd, ref WindowCompositionAttributeData data);
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct WindowCompositionAttributeData
+    {
+        public WindowCompositionAttribute Attribute;
+        public IntPtr Data;
+        public int SizeOfData;
+    }
+
+    internal enum WindowCompositionAttribute
+    {
+        // ...
+        WCA_ACCENT_POLICY = 19
+        // ...
+    }
+
+    internal enum AccentState
+    {
+        ACCENT_DISABLED = 0,
+        ACCENT_ENABLE_GRADIENT = 1,
+        ACCENT_ENABLE_TRANSPARENTGRADIENT = 2,
+        ACCENT_ENABLE_BLURBEHIND = 3,
+        ACCENT_INVALID_STATE = 4
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct AccentPolicy
+    {
+        public AccentState AccentState;
+        public int AccentFlags;
+        public int GradientColor;
+        public int AnimationId;
     }
 }
