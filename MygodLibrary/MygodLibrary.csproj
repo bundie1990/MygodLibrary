@@ -10,7 +10,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Mygod</RootNamespace>
     <AssemblyName>MygodLibrary</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
