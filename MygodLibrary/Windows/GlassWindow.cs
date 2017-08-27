@@ -14,7 +14,7 @@ namespace Mygod.Windows
     /// WPF Glass Window
     /// Inherit from this window class to enable glass on a WPF window
     /// </summary>
-    public class GlassWindow : PerMonitorDpiAwareWindow
+    public class GlassWindow : Window
     {
         #region properties
 
@@ -65,7 +65,7 @@ namespace Mygod.Windows
         {
             // Set the Background to transparent from Win32 perpective 
             var source = HwndSource.FromHwnd(WindowHandle);
-            if (source?.CompositionTarget != null) source.CompositionTarget.BackgroundColor = Colors.Transparent;
+            if (source != null && source.CompositionTarget != null) source.CompositionTarget.BackgroundColor = Colors.Transparent;
 
             // Set the Background to transparent from WPF perpective 
             Background = Brushes.Transparent;
@@ -87,6 +87,7 @@ namespace Mygod.Windows
         #endregion
 
         #region implementation
+        protected IntPtr WindowHandle;
 
         private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
@@ -94,8 +95,8 @@ namespace Mygod.Windows
             {
                 case DwmMessages.WmDwmCompositionChanged:
                 case DwmMessages.WmDwmNcRenderingChanged:
-                    AeroGlassCompositionChanged(this, new AeroGlassCompositionChangedEventArgs(AeroGlassCompositionEnabled));
-                    handled = false;
+                    AeroGlassCompositionChanged.Invoke(this, new AeroGlassCompositionChangedEventArgs(AeroGlassCompositionEnabled));
+                    handled = true;
                     break;
                 case DwmMessages.WmNcCalcSize:
                     handled = DrawOnTitleBar;
@@ -131,10 +132,12 @@ namespace Mygod.Windows
         protected override void OnSourceInitialized(EventArgs e)
         {
             base.OnSourceInitialized(e);
+            var interopHelper = new WindowInteropHelper(this);
+            WindowHandle = interopHelper.Handle;
 
             // add Window Proc hook to capture DWM messages
             var source = HwndSource.FromHwnd(WindowHandle);
-            source?.AddHook(WndProc);
+            if (source != null) source.AddHook(WndProc);
 
             //ResetAeroGlass();
             SizeChanged += UpdateAero;
@@ -165,7 +168,7 @@ namespace Mygod.Windows
                     ResetAeroGlass();
                     SetAeroGlassTransparency();
                     InvalidateVisual();
-                    if (Environment.OSVersion.Version.Major == 6 && Environment.OSVersion.Version.Minor <= 1)   // win7
+                    if (Environment.OSVersion.Version.Major >= 6 && Environment.OSVersion.Version.Minor <= 1)   // win7
                         Resources["GlowingEffect"] = new DropShadowEffect
                         {
                             Color = Colors.White, ShadowDepth = 0, RenderingBias = RenderingBias.Quality, BlurRadius = 8
